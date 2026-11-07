@@ -1,0 +1,1607 @@
+{
+  "schema_version": "1.0",
+  "team_name": "gold",
+  "model": {
+    "mode": "hybrid",
+    "name": "human"
+  },
+  "_instructions": "Заполните value (true/false/null или ступень шкалы), rationale и evidence_turns. Каждую разметку проверяет второй человек (поле reviewed_by).",
+  "results": [
+    {
+      "conversation_id": "p1-ru-001",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-004",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-007",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-010",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-013",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-016",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-019",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-022",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-025",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-ru-028",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-001",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-002",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-004",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-006",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-008",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-010",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-012",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-kz-014",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-001",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-003",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-005",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-007",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-009",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-011",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p1-en-013",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p4-ru-001",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p4-ru-002",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    },
+    {
+      "conversation_id": "p4-ru-004",
+      "status": "ok",
+      "annotator": "",
+      "reviewed_by": "",
+      "criteria": [
+        {
+          "criterion_id": "contact",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "discovery",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "identification",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "consultation",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "empathy",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "dialogue",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "closure",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        },
+        {
+          "criterion_id": "critical",
+          "value": "TODO",
+          "rationale": "",
+          "evidence_turns": []
+        }
+      ],
+      "score": null
+    }
+  ]
+}

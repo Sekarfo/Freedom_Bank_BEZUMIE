@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CQA · Оценка качества диалогов</title>
+  <link rel="stylesheet" href="css/cqa.css">
+  <script src="config.js"></script>
+</head>
+<body style="margin:0">
+  <div id="cqa-app" class="cqa-root">
+    <header class="cqa-header">
+      <div class="cqa-header__brand">
+        <span class="cqa-header__logo" aria-hidden="true">CQA</span>
+        <span class="cqa-header__title">Оценка качества диалогов<small>Freedom Broker · ОКК</small></span>
+      </div>
+      <nav class="cqa-nav" aria-label="Разделы">
+        <a class="cqa-nav__link" href="#/conversations" data-page="conversations">Диалоги</a>
+        <a class="cqa-nav__link" href="#/checklists" data-page="checklists">Чек-листы</a>
+        <a class="cqa-nav__link" href="#/appeals" data-page="appeals">Апелляции <span class="cqa-nav__badge" data-appeals-count hidden></span></a>
+        <a class="cqa-nav__link" href="#/analytics" data-page="analytics">Аналитика</a>
+        <a class="cqa-nav__link" href="#/settings" data-page="settings">Настройки модели</a>
+      </nav>
+      <div class="cqa-header__status" data-model-status title="Режим оценки"></div>
+    </header>
+    <main class="cqa-main" id="cqa-view" tabindex="-1">
+      <div class="cqa-empty">Загрузка…</div>
+    </main>
+    <div class="cqa-toasts" aria-live="polite"></div>
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

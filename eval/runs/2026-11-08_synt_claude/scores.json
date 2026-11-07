@@ -1,0 +1,1388 @@
+{
+ "sonnet_v2": {
+  "n": 60,
+  "errors": 0,
+  "accuracy": 0.85,
+  "per_criterion": {
+   "contact": 1.0,
+   "discovery": 0.8666666666666667,
+   "identification": 0.9666666666666667,
+   "consultation": 0.6666666666666666,
+   "empathy": 0.9666666666666667,
+   "dialogue": 0.8666666666666667,
+   "closure": 0.5166666666666667,
+   "critical": 0.95
+  },
+  "per_language": {
+   "RU": 0.8375,
+   "KZ": 0.875,
+   "EN": 0.85
+  },
+  "mae": 7.109,
+  "within_5": 0.31666666666666665,
+  "critical": {
+   "tp": 3,
+   "fp": 0,
+   "fn": 3
+  },
+  "confusion": {
+   "closure": {
+    "false→true": 26,
+    "true→false": 3
+   },
+   "discovery": {
+    "false→true": 1,
+    "false→null": 2,
+    "true→null": 4,
+    "true→false": 1
+   },
+   "consultation": {
+    "10→5": 3,
+    "20→15": 12,
+    "20→10": 3,
+    "15→10": 1,
+    "10→15": 1
+   },
+   "dialogue": {
+    "7→4": 2,
+    "10→7": 4,
+    "4→7": 2
+   },
+   "critical": {
+    "true→false": 3
+   },
+   "empathy": {
+    "false→true": 1,
+    "true→false": 1
+   },
+   "identification": {
+    "false→null": 2
+   }
+  },
+  "misses": [
+   [
+    "syn-ru-001",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-003",
+    "discovery",
+    false,
+    true
+   ],
+   [
+    "syn-ru-003",
+    "consultation",
+    10,
+    5
+   ],
+   [
+    "syn-ru-003",
+    "dialogue",
+    7,
+    4
+   ],
+   [
+    "syn-ru-004",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-005",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-006",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-ru-007",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-008",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-009",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-ru-009",
+    "consultation",
+    10,
+    5
+   ],
+   [
+    "syn-ru-009",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-009",
+    "critical",
+    true,
+    false
+   ],
+   [
+    "syn-ru-010",
+    "consultation",
+    10,
+    5
+   ],
+   [
+    "syn-ru-010",
+    "critical",
+    true,
+    false
+   ],
+   [
+    "syn-ru-011",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-012",
+    "consultation",
+    20,
+    10
+   ],
+   [
+    "syn-ru-015",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-ru-016",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-016",
+    "empathy",
+    false,
+    true
+   ],
+   [
+    "syn-ru-016",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-017",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-018",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-ru-018",
+    "identification",
+    false,
+    null
+   ],
+   [
+    "syn-ru-018",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-019",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-020",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-020",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-021",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-022",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-ru-022",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-022",
+    "dialogue",
+    4,
+    7
+   ],
+   [
+    "syn-ru-023",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-024",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-024",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-027",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-028",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-029",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-ru-030",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-001",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-002",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-kz-003",
+    "discovery",
+    true,
+    false
+   ],
+   [
+    "syn-kz-003",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-kz-004",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-006",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-007",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-008",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-kz-010",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-011",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-kz-012",
+    "consultation",
+    20,
+    10
+   ],
+   [
+    "syn-kz-013",
+    "consultation",
+    20,
+    10
+   ],
+   [
+    "syn-kz-013",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-kz-014",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-kz-014",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-001",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-002",
+    "dialogue",
+    4,
+    7
+   ],
+   [
+    "syn-en-003",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-004",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-005",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-007",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-007",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-en-008",
+    "consultation",
+    15,
+    10
+   ],
+   [
+    "syn-en-008",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-009",
+    "identification",
+    false,
+    null
+   ],
+   [
+    "syn-en-009",
+    "consultation",
+    10,
+    15
+   ],
+   [
+    "syn-en-010",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-en-010",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-011",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-012",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-014",
+    "dialogue",
+    7,
+    4
+   ],
+   [
+    "syn-en-014",
+    "critical",
+    true,
+    false
+   ],
+   [
+    "syn-en-015",
+    "consultation",
+    20,
+    15
+   ]
+  ]
+ },
+ "opus_v2": {
+  "n": 60,
+  "errors": 0,
+  "accuracy": 0.88125,
+  "per_criterion": {
+   "contact": 1.0,
+   "discovery": 0.9,
+   "identification": 0.9666666666666667,
+   "consultation": 0.75,
+   "empathy": 0.9666666666666667,
+   "dialogue": 0.9333333333333333,
+   "closure": 0.5666666666666667,
+   "critical": 0.9666666666666667
+  },
+  "per_language": {
+   "RU": 0.8708333333333333,
+   "KZ": 0.9333333333333333,
+   "EN": 0.85
+  },
+  "mae": 6.171999999999998,
+  "within_5": 0.4,
+  "critical": {
+   "tp": 4,
+   "fp": 0,
+   "fn": 2
+  },
+  "confusion": {
+   "closure": {
+    "false→true": 23,
+    "true→false": 3
+   },
+   "discovery": {
+    "false→true": 2,
+    "false→null": 1,
+    "null→true": 1,
+    "true→null": 1,
+    "true→false": 1
+   },
+   "consultation": {
+    "20→15": 11,
+    "10→5": 1,
+    "10→0": 1,
+    "10→15": 1,
+    "5→10": 1
+   },
+   "critical": {
+    "true→false": 2
+   },
+   "identification": {
+    "false→null": 2
+   },
+   "empathy": {
+    "true→false": 2
+   },
+   "dialogue": {
+    "4→7": 1,
+    "10→7": 2,
+    "7→4": 1
+   }
+  },
+  "misses": [
+   [
+    "syn-ru-001",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-003",
+    "discovery",
+    false,
+    true
+   ],
+   [
+    "syn-ru-004",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-005",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-006",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-ru-008",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-009",
+    "consultation",
+    10,
+    5
+   ],
+   [
+    "syn-ru-009",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-009",
+    "critical",
+    true,
+    false
+   ],
+   [
+    "syn-ru-010",
+    "consultation",
+    10,
+    0
+   ],
+   [
+    "syn-ru-011",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-014",
+    "discovery",
+    null,
+    true
+   ],
+   [
+    "syn-ru-015",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-016",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-017",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-018",
+    "discovery",
+    false,
+    true
+   ],
+   [
+    "syn-ru-018",
+    "identification",
+    false,
+    null
+   ],
+   [
+    "syn-ru-018",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-019",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-020",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-020",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-021",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-022",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-022",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-ru-022",
+    "dialogue",
+    4,
+    7
+   ],
+   [
+    "syn-ru-023",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-024",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-027",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-028",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-ru-029",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-ru-030",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-001",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-003",
+    "discovery",
+    true,
+    false
+   ],
+   [
+    "syn-kz-003",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-kz-006",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-008",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-kz-010",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-kz-011",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-kz-013",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-en-001",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-003",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-004",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-005",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-006",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-en-007",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-007",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-en-008",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-008",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-009",
+    "identification",
+    false,
+    null
+   ],
+   [
+    "syn-en-009",
+    "consultation",
+    10,
+    15
+   ],
+   [
+    "syn-en-010",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-en-010",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-011",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-012",
+    "closure",
+    false,
+    true
+   ],
+   [
+    "syn-en-014",
+    "consultation",
+    5,
+    10
+   ],
+   [
+    "syn-en-014",
+    "dialogue",
+    7,
+    4
+   ],
+   [
+    "syn-en-014",
+    "critical",
+    true,
+    false
+   ]
+  ]
+ },
+ "sonnet_v3": {
+  "n": 60,
+  "errors": 0,
+  "accuracy": 0.9208333333333333,
+  "per_criterion": {
+   "contact": 1.0,
+   "discovery": 0.8666666666666667,
+   "identification": 0.9833333333333333,
+   "consultation": 0.7833333333333333,
+   "empathy": 0.95,
+   "dialogue": 0.9,
+   "closure": 0.8833333333333333,
+   "critical": 1.0
+  },
+  "per_language": {
+   "RU": 0.9,
+   "KZ": 0.9416666666666667,
+   "EN": 0.9416666666666667
+  },
+  "mae": 3.993833333333333,
+  "within_5": 0.65,
+  "critical": {
+   "tp": 6,
+   "fp": 0,
+   "fn": 0
+  },
+  "confusion": {
+   "discovery": {
+    "false→true": 1,
+    "false→null": 3,
+    "true→null": 4
+   },
+   "consultation": {
+    "10→5": 2,
+    "20→15": 7,
+    "10→0": 1,
+    "0→5": 1,
+    "15→10": 1,
+    "10→15": 1
+   },
+   "dialogue": {
+    "7→4": 2,
+    "4→0": 1,
+    "4→7": 1,
+    "10→7": 2
+   },
+   "closure": {
+    "true→false": 7
+   },
+   "empathy": {
+    "false→true": 1,
+    "true→false": 2
+   },
+   "identification": {
+    "null→false": 1
+   }
+  },
+  "misses": [
+   [
+    "syn-ru-003",
+    "discovery",
+    false,
+    true
+   ],
+   [
+    "syn-ru-003",
+    "consultation",
+    10,
+    5
+   ],
+   [
+    "syn-ru-003",
+    "dialogue",
+    7,
+    4
+   ],
+   [
+    "syn-ru-005",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-006",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-ru-007",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-009",
+    "consultation",
+    10,
+    5
+   ],
+   [
+    "syn-ru-009",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-010",
+    "consultation",
+    10,
+    0
+   ],
+   [
+    "syn-ru-010",
+    "dialogue",
+    4,
+    0
+   ],
+   [
+    "syn-ru-010",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-012",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-013",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-016",
+    "empathy",
+    false,
+    true
+   ],
+   [
+    "syn-ru-018",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-ru-018",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-020",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-022",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-ru-022",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-022",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-ru-022",
+    "dialogue",
+    4,
+    7
+   ],
+   [
+    "syn-ru-024",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-029",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-ru-029",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-kz-002",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-kz-005",
+    "identification",
+    null,
+    false
+   ],
+   [
+    "syn-kz-008",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-kz-009",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-kz-009",
+    "consultation",
+    0,
+    5
+   ],
+   [
+    "syn-kz-012",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-kz-012",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-en-007",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-007",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-en-008",
+    "consultation",
+    15,
+    10
+   ],
+   [
+    "syn-en-008",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-009",
+    "consultation",
+    10,
+    15
+   ],
+   [
+    "syn-en-014",
+    "dialogue",
+    7,
+    4
+   ],
+   [
+    "syn-en-015",
+    "consultation",
+    20,
+    15
+   ]
+  ]
+ },
+ "opus_v3": {
+  "n": 60,
+  "errors": 0,
+  "accuracy": 0.9520833333333333,
+  "per_criterion": {
+   "contact": 1.0,
+   "discovery": 0.9,
+   "identification": 0.9833333333333333,
+   "consultation": 0.9,
+   "empathy": 0.95,
+   "dialogue": 0.9166666666666666,
+   "closure": 0.9666666666666667,
+   "critical": 1.0
+  },
+  "per_language": {
+   "RU": 0.95,
+   "KZ": 0.9583333333333334,
+   "EN": 0.95
+  },
+  "mae": 3.043833333333333,
+  "within_5": 0.7833333333333333,
+  "critical": {
+   "tp": 6,
+   "fp": 0,
+   "fn": 0
+  },
+  "confusion": {
+   "discovery": {
+    "false→true": 2,
+    "false→null": 1,
+    "null→true": 1,
+    "true→false": 1,
+    "true→null": 1
+   },
+   "consultation": {
+    "10→0": 1,
+    "20→15": 2,
+    "20→10": 1,
+    "10→20": 1,
+    "5→10": 1
+   },
+   "closure": {
+    "true→false": 2
+   },
+   "empathy": {
+    "true→false": 3
+   },
+   "dialogue": {
+    "4→7": 1,
+    "7→10": 1,
+    "10→7": 2,
+    "7→4": 1
+   },
+   "identification": {
+    "null→false": 1
+   }
+  },
+  "misses": [
+   [
+    "syn-ru-003",
+    "discovery",
+    false,
+    true
+   ],
+   [
+    "syn-ru-006",
+    "discovery",
+    false,
+    null
+   ],
+   [
+    "syn-ru-010",
+    "consultation",
+    10,
+    0
+   ],
+   [
+    "syn-ru-014",
+    "discovery",
+    null,
+    true
+   ],
+   [
+    "syn-ru-018",
+    "discovery",
+    false,
+    true
+   ],
+   [
+    "syn-ru-018",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-ru-020",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-ru-022",
+    "consultation",
+    20,
+    10
+   ],
+   [
+    "syn-ru-022",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-ru-022",
+    "dialogue",
+    4,
+    7
+   ],
+   [
+    "syn-ru-023",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-ru-024",
+    "consultation",
+    20,
+    15
+   ],
+   [
+    "syn-kz-003",
+    "discovery",
+    true,
+    false
+   ],
+   [
+    "syn-kz-005",
+    "identification",
+    null,
+    false
+   ],
+   [
+    "syn-kz-008",
+    "empathy",
+    true,
+    false
+   ],
+   [
+    "syn-kz-008",
+    "dialogue",
+    7,
+    10
+   ],
+   [
+    "syn-kz-015",
+    "discovery",
+    true,
+    null
+   ],
+   [
+    "syn-en-007",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-007",
+    "closure",
+    true,
+    false
+   ],
+   [
+    "syn-en-008",
+    "dialogue",
+    10,
+    7
+   ],
+   [
+    "syn-en-009",
+    "consultation",
+    10,
+    20
+   ],
+   [
+    "syn-en-014",
+    "consultation",
+    5,
+    10
+   ],
+   [
+    "syn-en-014",
+    "dialogue",
+    7,
+    4
+   ]
+  ]
+ }
+}

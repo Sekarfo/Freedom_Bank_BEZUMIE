@@ -1,0 +1,37 @@
+# Запуск: docker compose up --build  →  http://localhost:8000
+# Ollama запускается нативно на ноутбуке (Windows/macOS), backend обращается к ней через host.docker.internal.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      LOCAL_LLM_BASE_URL: ${DOCKER_LOCAL_LLM_BASE_URL:-http://host.docker.internal:11434}
+      DATABASE_URL: sqlite:////data/cqa.db
+      RAW_DATA_DIR: /data/raw
+      FRONTEND_DIR: /app/frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # нужно на Linux; на Windows/macOS имя есть по умолчанию
+    volumes:
+      - cqa-data:/data
+      - ./results:/app/results
+      - ./frontend:/app/frontend:ro            # правки интерфейса видны без пересборки
+    restart: unless-stopped
+
+  # Linux + NVIDIA: раскомментируйте сервис ollama и задайте DOCKER_LOCAL_LLM_BASE_URL=http://ollama:11434
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports: ["11434:11434"]
+  #   volumes: ["ollama:/root/.ollama"]
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+
+volumes:
+  cqa-data:
+  # ollama:

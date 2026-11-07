@@ -1,0 +1,19 @@
+# Секреты и локальные настройки
+.env
+backend/.env
+
+# База и кэш
+data/*.db
+data/*.db-*
+data/raw/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
