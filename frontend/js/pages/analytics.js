@@ -1,6 +1,6 @@
 // Раздел «Аналитика»: средний итог, распределение, слабые критерии, разрезы, грубые нарушения, апелляции, стоимость.
 import { API } from "../api.js";
-import { AGREEMENT, CHANNELS, esc, fmtMoney, fmtNum, fmtPct, fmtScore, scoreChip, scoreTone } from "../utils.js";
+import { CHANNELS, EVIDENCE, esc, fmtMoney, fmtNum, fmtPct, fmtScore, scoreChip, scoreTone } from "../utils.js";
 
 const filters = { dataset: "", channel: "", language: "" };
 
@@ -33,7 +33,7 @@ async function draw(view) {
     return;
   }
   const maxBucket = Math.max(1, ...d.distribution.map((b) => b.count));
-  const agreeTotal = Object.values(d.agreement).reduce((a, b) => a + b, 0) || 1;
+  const evTotal = Object.values(d.evidence).reduce((a, b) => a + b, 0) || 1;
   body.innerHTML = `
     <div class="cqa-kpis">
       ${kpi("Оценено диалогов", `${d.ok}`, `из ${d.conversations_total} · ошибок ${d.errors}`)}
@@ -48,22 +48,22 @@ async function draw(view) {
         <div class="cqa-panel__body"><div class="cqa-bars">${d.distribution.map((b) => `<div class="cqa-bars__col">
           <span class="cqa-small">${b.count}</span><div class="cqa-bars__bar" style="height:${(b.count / maxBucket) * 100}%"></div>
           <span class="cqa-bars__label">${esc(b.label)}</span></div>`).join("")}</div></div></section>
-      <section class="cqa-panel"><div class="cqa-panel__head"><h2>Источник финальных вердиктов</h2></div>
-        <div class="cqa-panel__body cqa-stack">${Object.entries(d.agreement).sort((a, b) => b[1] - a[1]).map(([k, v]) => `
-          <div class="cqa-row"><span style="width:170px">${esc(AGREEMENT[k] || k)}</span>
-          <div class="cqa-hbar" style="flex:1"><div style="width:${(v / agreeTotal) * 100}%;background:var(--cqa-accent)"></div></div>
-          <span class="cqa-small" style="width:70px;text-align:right">${v} · ${fmtPct(v / agreeTotal)}</span></div>`).join("")}
+      <section class="cqa-panel"><div class="cqa-panel__head"><h2>Проверка доказательств кодом</h2></div>
+        <div class="cqa-panel__body cqa-stack">${Object.entries(d.evidence).sort((a, b) => b[1] - a[1]).map(([k, v]) => `
+          <div class="cqa-row"><span style="width:220px">${esc(EVIDENCE[k] || k)}</span>
+          <div class="cqa-hbar" style="flex:1"><div style="width:${(v / evTotal) * 100}%;background:var(--cqa-accent)"></div></div>
+          <span class="cqa-small" style="width:70px;text-align:right">${v} · ${fmtPct(v / evTotal)}</span></div>`).join("")}
+          <div class="cqa-faint">Цитату каждого вывода код ищет в тексте диалога; не найдена — вердикт уходит на проверку человеку.</div>
           <div class="cqa-faint">Модели: ${Object.entries(d.models).map(([m, n]) => `${esc(m)} (${n})`).join("; ")}</div></div></section>
     </div>
-    <section class="cqa-panel cqa-mt"><div class="cqa-panel__head"><h2>Критерии: где теряются баллы</h2>
-      <span class="cqa-faint">override — доля исправлений облаком (где слаба локальная модель)</span></div>
+    <section class="cqa-panel cqa-mt"><div class="cqa-panel__head"><h2>Критерии: где теряются баллы</h2></div>
       <div class="cqa-table-wrap"><table class="cqa-table"><thead><tr><th>Критерий</th><th class="cqa-num">Вес</th><th>Средний % от веса</th>
-        <th class="cqa-num">«Нет»</th><th class="cqa-num">N/A</th><th class="cqa-num">override</th><th class="cqa-num">На проверку</th><th class="cqa-num">Апелляций</th></tr></thead>
+        <th class="cqa-num">«Нет»</th><th class="cqa-num">N/A</th><th class="cqa-num">На проверку</th><th class="cqa-num">Апелляций</th></tr></thead>
       <tbody>${d.criteria.map((c) => `<tr><td>${esc(c.title)} <span class="cqa-faint cqa-id">${esc(c.criterion_id)}</span></td>
         <td class="cqa-num">${c.is_critical_flag ? "флаг" : fmtNum(c.weight)}</td>
         <td>${c.avg_ratio === null ? (c.is_critical_flag ? `<span class="cqa-small">нарушений: ${fmtPct(c.share_yes)}</span>` : "—") : `<div class="cqa-row" style="flex-wrap:nowrap"><div class="cqa-hbar" style="flex:1"><div style="width:${c.avg_ratio * 100}%;background:var(--cqa-${scoreTone(c.avg_ratio * 100)})"></div></div><span class="cqa-small" style="width:40px">${fmtPct(c.avg_ratio)}</span></div>`}</td>
         <td class="cqa-num">${c.is_critical_flag ? "—" : fmtPct(c.share_no)}</td><td class="cqa-num">${fmtPct(c.share_na)}</td>
-        <td class="cqa-num">${fmtPct(c.override_rate)}</td><td class="cqa-num">${fmtPct(c.needs_review_rate)}</td><td class="cqa-num">${c.appealed}</td></tr>`).join("")}</tbody></table></div></section>
+        <td class="cqa-num">${fmtPct(c.needs_review_rate)}</td><td class="cqa-num">${c.appealed}</td></tr>`).join("")}</tbody></table></div></section>
     <div class="cqa-grid cqa-grid--2 cqa-mt">
       ${groupTable("По языкам", d.by_language, (k) => k)}
       ${groupTable("По каналам", d.by_channel, (k) => CHANNELS[k] || k)}

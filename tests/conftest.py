@@ -58,41 +58,30 @@ def conv():
     return normalize_record(json.loads(json.dumps(SAMPLE_RECORD)), "TEST")
 
 
-def primary_json(values: dict[str, Any], evidence: dict[str, tuple[list[int], str]] | None = None,
-                 confidence: str = "high", overrides: dict[str, dict[str, Any]] | None = None) -> str:
+def judge_json(values: dict[str, Any], evidence: dict[str, tuple[list[int], str]] | None = None,
+               confidence: str = "high", overrides: dict[str, dict[str, Any]] | None = None) -> str:
+    """Ответ модели-судьи в формате схемы: facts + массив criteria (как отвечает Claude)."""
     evidence = evidence or EXAMPLE_EVIDENCE
-    crit = {}
+    crit = []
     for cid, v in values.items():
         turns, quote = evidence.get(cid, ([1], ""))
-        crit[cid] = {"evidence_turns": turns, "quote": quote, "rationale": f"Обоснование {cid}.",
-                     "value": v, "confidence": confidence}
-        crit[cid].update((overrides or {}).get(cid, {}))
+        item = {"criterion_id": cid, "evidence_turns": turns, "quote": quote, "rationale": f"Обоснование {cid}.",
+                "value": v, "confidence": confidence}
+        item.update((overrides or {}).get(cid, {}))
+        crit.append(item)
     return json.dumps({"facts": {"client_request_turn": 1, "client_request_summary": "тариф",
                                  "protected_action_requested": False, "account_data_disclosed_turn": None,
                                  "verification_confirmed_turn": None, "complaint_present": False},
                        "criteria": crit}, ensure_ascii=False)
 
 
-def review_json(local_values: dict[str, Any], final_values: dict[str, Any],
-                evidence: dict[str, tuple[list[int], str]] | None = None, confidence: str = "high") -> str:
-    evidence = evidence or EXAMPLE_EVIDENCE
-    crit = {}
-    for cid, v in final_values.items():
-        turns, quote = evidence.get(cid, ([1], ""))
-        same = local_values.get(cid) == v
-        crit[cid] = {"decision": "confirm" if same else "override", "evidence_turns": turns, "quote": quote,
-                     "rationale": f"Проверено {cid}.", "override_reason": "" if same else "Младший ошибся.",
-                     "value": v, "confidence": confidence}
-    return json.dumps({"criteria": crit}, ensure_ascii=False)
-
-
 class MockClient:
     """Mock LLM: отдаёт заранее заданные ответы (по очереди) или вызывает функцию(system, user, schema)."""
 
-    def __init__(self, responses: list[str] | Callable[[str, str, dict], str], kind: str = "local",
+    def __init__(self, responses: list[str] | Callable[[str, str, dict], str],
                  provider: str = "mock", model: str = "mock-model", fail: Exception | None = None):
         self.responses = responses
-        self.kind, self.provider, self.model, self.display_name = kind, provider, model, model
+        self.provider, self.model, self.display_name = provider, model, model
         self.fail = fail
         self.calls: list[dict[str, Any]] = []
 
@@ -107,7 +96,7 @@ class MockClient:
         else:
             text = self.responses[min(len(self.calls) - 1, len(self.responses) - 1)]
         return LLMResponse(text=text, model=self.model, usage={"input_tokens": 100, "output_tokens": 50},
-                           cost_usd=0.001 if self.kind == "cloud" else 0.0)
+                           cost_usd=0.001)
 
 
 @pytest.fixture

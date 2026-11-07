@@ -5,21 +5,17 @@
 """
 from __future__ import annotations
 
-import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
 
 from app.brain.preprocess import render_signals, render_transcript
 from app.checklist.render import render_checklist
-from app.schemas import ChecklistConfig, Conversation, Signals, Verdict
+from app.schemas import ChecklistConfig, Conversation, Signals
 
 PROMPT_DIR = Path(__file__).resolve().parent
 
 PROMPT_VERSIONS: dict[str, str] = {
-    "primary": "primary-v1",
-    "review": "review-v1",
-    "arbiter": "arbiter-v1",
+    "judge": "judge-v1",
     "user": "user-v1",
 }
 
@@ -36,13 +32,13 @@ VOICE_NOTES = (
 )
 
 
-@lru_cache(maxsize=32)
-def _template(name: str) -> str:
-    return (PROMPT_DIR / f"{name}_system.md").read_text(encoding="utf-8")
+@lru_cache(maxsize=4)
+def _template() -> str:
+    return (PROMPT_DIR / "judge_system.md").read_text(encoding="utf-8")
 
 
-def system_prompt(kind: str, checklist: ChecklistConfig) -> str:
-    return _template(kind).replace("{{CHECKLIST}}", render_checklist(checklist))
+def system_prompt(checklist: ChecklistConfig) -> str:
+    return _template().replace("{{CHECKLIST}}", render_checklist(checklist))
 
 
 def user_prompt(conv: Conversation, signals: Signals) -> str:
@@ -57,31 +53,3 @@ def user_prompt(conv: Conversation, signals: Signals) -> str:
     parts += ["", "# Подсказки предобработки (эвристики, могут ошибаться)", render_signals(signals),
               "", "# Транскрипт", render_transcript(conv)]
     return "\n".join(parts)
-
-
-def _verdict_brief(v: Verdict) -> dict[str, Any]:
-    return {"criterion_id": v.criterion_id, "value": v.value, "rationale": v.rationale,
-            "evidence_turns": v.evidence_turns, "quote": v.quote, "confidence": v.confidence}
-
-
-def review_user_prompt(conv: Conversation, signals: Signals, local_verdicts: dict[str, Verdict],
-                       checklist: ChecklistConfig) -> str:
-    rows = []
-    for c in checklist.criteria:
-        v = local_verdicts.get(c.criterion_id)
-        rows.append(_verdict_brief(v) if v else {"criterion_id": c.criterion_id, "value": "НЕТ ВЕРДИКТА"})
-    return (user_prompt(conv, signals)
-            + "\n\n# Вердикты младшего оценщика\n"
-            + json.dumps(rows, ensure_ascii=False, indent=1))
-
-
-def arbiter_user_prompt(conv: Conversation, signals: Signals, disputed: list[str],
-                        a: dict[str, Verdict], b: dict[str, Verdict]) -> str:
-    rows = []
-    for cid in disputed:
-        rows.append({"criterion_id": cid,
-                     "оценщик_A": _verdict_brief(a[cid]) if cid in a else None,
-                     "оценщик_B": _verdict_brief(b[cid]) if cid in b else None})
-    return (user_prompt(conv, signals)
-            + "\n\n# Спорные критерии и мнения оценщиков\n"
-            + json.dumps(rows, ensure_ascii=False, indent=1))

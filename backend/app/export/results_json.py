@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -13,7 +12,8 @@ from app.config import get_settings
 from app.models import ConversationRow, Evaluation
 from app.store import latest_evaluations_map
 
-MODE_MAP = {"local": "local", "cloud": "external_api", "hybrid": "hybrid"}
+# Модель-судья всегда вызывается через внешний API (Claude или OpenAI-совместимый).
+MODEL_MODE = "external_api"
 
 
 def export_checklist(session: Session, dataset: str, checklist_version_id: int | None = None,
@@ -68,21 +68,14 @@ def build_results(session: Session, dataset: str, checklist_version_id: int | No
     evs = latest_evaluations_map(session, [r.conversation_id for r in rows], checklist_version_id)
     results = [evaluation_record(evs.get(r.conversation_id), r.conversation_id, use_final) for r in rows]
 
-    used = [e for e in evs.values()]
-    modes = Counter(e.mode for e in used)
-    mode = MODE_MAP.get(modes.most_common(1)[0][0], "hybrid") if modes else "hybrid"
-    if len(modes) > 1:
-        mode = "hybrid"
-    names = []
-    for e in used:
+    names: list[str] = []
+    for e in evs.values():
         if e.model_name and e.model_name not in names:
             names.append(e.model_name)
-    if mode == "local" and names and all("OpenRouter" in n for n in names):
-        mode = "external_api"  # «локальная» модель фактически вызвана через внешний API
     return {
         "schema_version": "1.0",
         "team_name": get_settings().team_name,
-        "model": {"mode": mode, "name": "; ".join(names) or "not evaluated"},
+        "model": {"mode": MODEL_MODE, "name": "; ".join(names) or "not evaluated"},
         "results": results,
     }
 

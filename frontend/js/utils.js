@@ -11,13 +11,8 @@ export function el(html) {
 
 export const SPEAKERS = { client: "Клиент", operator: "Оператор", bot: "Бот", system: "Система" };
 export const CHANNELS = { chat: "Чат", voice: "Звонок", email: "Email", messenger: "Мессенджер" };
-export const MODES = { local: "Локально", cloud: "Облако", hybrid: "Гибрид" };
-export const PROVIDERS = { anthropic: "Claude", openai: "OpenAI" };
+export const PROVIDERS = { anthropic: "Claude", openai: "OpenAI-совместимый API" };
 export const CONFIDENCE = { high: "уверенность высокая", medium: "уверенность средняя", low: "уверенность низкая" };
-export const AGREEMENT = {
-  agree: "согласие моделей", override: "исправлено облаком", local_only: "только локальная",
-  cloud_only: "только облако", single: "одна модель", arbiter: "решение арбитра",
-};
 export const EVIDENCE = {
   verified: "цитата подтверждена", corrected: "номер реплики исправлен кодом", no_quote: "без цитаты",
   unverified: "цитата не найдена в тексте", missing: "нет доказательства", default: "проверенный участок по умолчанию",

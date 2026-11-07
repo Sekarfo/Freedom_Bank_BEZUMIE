@@ -9,7 +9,6 @@ from typing import Any
 from sqlalchemy import select
 
 from app.brain.cloud_llm import make_cloud_client
-from app.brain.local_llm import make_local_client
 from app.brain.pipeline import Pipeline, cache_key
 from app.checklist.service import get_version, to_config
 from app.config import get_settings
@@ -19,61 +18,26 @@ from app.schemas import EvaluationOptions
 from app.store import to_conversation
 
 _BACKGROUND: set[asyncio.Task] = set()
-_local_clients: dict[str, Any] = {}
-_cloud_clients: dict[str, Any] = {}
+_clients: dict[str, Any] = {}
 
 
-def _local_factory(key: str):
-    if key not in _local_clients:
-        _local_clients[key] = make_local_client(key)
-    return _local_clients[key]
-
-
-def _cloud_factory(provider: str):
-    if provider not in _cloud_clients:
-        _cloud_clients[provider] = make_cloud_client(provider)
-    return _cloud_clients[provider]
+def _client_factory(provider: str):
+    if provider not in _clients:
+        _clients[provider] = make_cloud_client(provider)
+    return _clients[provider]
 
 
 def reset_clients() -> None:
-    _local_clients.clear()
-    _cloud_clients.clear()
-
-
-def local_stage_lookup(conversation_id: str, checklist_hash: str, model: str, prompt_version: str,
-                       think: bool) -> str | None:
-    """Ищет в журнале прошлых оценок валидный ответ локальной модели с теми же входами.
-
-    Этап 1 детерминирован (temperature 0, seed), поэтому повторять его ради другой облачной конфигурации
-    (review / blind / другой провайдер) не нужно. «Переоценить» (force) этот поиск отключает.
-    """
-    with session_scope() as s:
-        evs = s.scalars(select(Evaluation).where(Evaluation.conversation_id == conversation_id)
-                        .order_by(Evaluation.id.desc())).all()
-        for ev in evs:
-            audit = ev.audit or {}
-            st = (audit.get("stages") or {}).get("local") or {}
-            if (audit.get("checklist_hash") == checklist_hash and st.get("ok") and st.get("model") == model
-                    and st.get("prompt_version") == prompt_version
-                    and bool((st.get("meta") or {}).get("think", think)) == think and st.get("raw_texts")):
-                return st["raw_texts"][-1]
-    return None
+    _clients.clear()
 
 
 def default_pipeline() -> Pipeline:
-    return Pipeline(_local_factory, _cloud_factory, local_stage_lookup)
+    return Pipeline(_client_factory)
 
 
-def resolve_options(req_mode: str | None = None, provider: str | None = None, local_model: str | None = None,
-                    strategy: str | None = None, runtime: dict[str, Any] | None = None) -> EvaluationOptions:
+def resolve_options(provider: str | None = None, runtime: dict[str, Any] | None = None) -> EvaluationOptions:
     rt = runtime or {}
-    s = get_settings()
-    return EvaluationOptions(
-        mode=req_mode or rt.get("mode") or s.default_mode,
-        cloud_provider=provider or rt.get("cloud_provider") or s.default_provider,
-        local_model=local_model or rt.get("local_model") or s.resolve_local_model()[0],
-        hybrid_strategy=strategy or rt.get("hybrid_strategy") or s.hybrid_strategy,
-    )
+    return EvaluationOptions(provider=provider or rt.get("provider") or get_settings().default_provider)
 
 
 def _now() -> datetime:
@@ -90,9 +54,8 @@ async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, versio
         conv = to_conversation(row)
         ver = get_version(s, version_id)
         checklist = to_config(ver)
-        local_tag = get_settings().resolve_local_model(opts.local_model)[1] if opts.mode != "cloud" else None
-        cloud_model = get_settings().cloud_model_for(opts.cloud_provider) if opts.mode != "local" else None
-        key = cache_key(conv, checklist.for_channel(conv.channel), opts, local_tag, cloud_model)
+        model = get_settings().model_for(opts.provider)
+        key = cache_key(conv, checklist.for_channel(conv.channel), opts.provider, model)
         if not force:
             candidates = s.scalars(select(Evaluation).where(Evaluation.cache_key == key, Evaluation.status == "ok",
                                                             Evaluation.checklist_version_id == ver.id)
@@ -110,13 +73,12 @@ async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, versio
                 s.flush()
                 return ev.id, True, ev.status
 
-    outcome = await pipeline.evaluate(conv, checklist, opts, reuse_local=not force)
+    outcome = await pipeline.evaluate(conv, checklist, opts)
 
     with session_scope() as s:
         ev = Evaluation(
-            conversation_id=conversation_id, checklist_version_id=version_id, job_id=job_id, mode=opts.mode,
-            cloud_provider=opts.cloud_provider if opts.mode != "local" else None, cloud_model=outcome.cloud_model,
-            local_model=outcome.local_model, hybrid_strategy=opts.hybrid_strategy if opts.mode == "hybrid" else None,
+            conversation_id=conversation_id, checklist_version_id=version_id, job_id=job_id,
+            provider=outcome.provider or opts.provider, model=outcome.model or model,
             model_name=outcome.model_name, status=outcome.status, error=outcome.error, cache_key=key,
             ai_score=outcome.score, final_score=outcome.score, critical_flag=outcome.critical_flag,
             needs_review=outcome.needs_review, criteria=outcome.criteria, sections=outcome.sections,
@@ -141,9 +103,8 @@ def _copy_evaluation(src: Evaluation, conversation_id: str, job_id: str | None, 
         c.pop("review", None)
     score, flag, sections = finalize_scores(criteria, checklist) if src.status == "ok" else (None, None, [])
     return Evaluation(
-        conversation_id=conversation_id, checklist_version_id=src.checklist_version_id, job_id=job_id, mode=src.mode,
-        cloud_provider=src.cloud_provider, cloud_model=src.cloud_model, local_model=src.local_model,
-        hybrid_strategy=src.hybrid_strategy, model_name=src.model_name, status=src.status, error=src.error,
+        conversation_id=conversation_id, checklist_version_id=src.checklist_version_id, job_id=job_id,
+        provider=src.provider, model=src.model, model_name=src.model_name, status=src.status, error=src.error,
         cache_key=src.cache_key, ai_score=score, final_score=score, critical_flag=flag,
         needs_review=any(c.get("needs_review") for c in criteria), criteria=criteria, sections=sections,
         signals=copy.deepcopy(src.signals or {}),
@@ -172,8 +133,7 @@ async def run_job(job_id: str, pipeline: Pipeline | None = None, on_progress=Non
     ids: list[str] = params["conversation_ids"]
     version_id: int = params["checklist_version_id"]
     force: bool = params.get("force", False)
-    s_cfg = get_settings()
-    gate = asyncio.Semaphore(max(2, s_cfg.local_concurrency + s_cfg.cloud_concurrency))
+    gate = asyncio.Semaphore(max(2, get_settings().cloud_concurrency))
     lock = asyncio.Lock()
 
     async def one(cid: str) -> None:
@@ -184,7 +144,7 @@ async def run_job(job_id: str, pipeline: Pipeline | None = None, on_progress=Non
                 ev_id, from_cache, status = None, False, "error"
                 with session_scope() as s:
                     ev = Evaluation(conversation_id=cid, checklist_version_id=version_id, job_id=job_id,
-                                    mode=opts.mode, status="error", error=f"{type(exc).__name__}: {exc}",
+                                    provider=opts.provider, status="error", error=f"{type(exc).__name__}: {exc}",
                                     cache_key="", criteria=[], sections=[], audit={}, signals={})
                     s.add(ev)
                     s.flush()

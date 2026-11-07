@@ -1,7 +1,7 @@
 // Точка входа: маршруты, статус модели в шапке, параметры из query string (в т.ч. от Dynamics 365).
 import { API } from "./api.js";
 import { route, start } from "./router.js";
-import { MODES, PROVIDERS, esc } from "./utils.js";
+import { PROVIDERS, esc } from "./utils.js";
 
 route("/conversations", () => import("./pages/conversations.js"));
 route("/conversation/:id", () => import("./pages/card.js"));
@@ -29,10 +29,8 @@ export async function refreshHeader() {
     const [settings, appeals] = await Promise.all([API.settings(), API.appeals("open")]);
     const badge = document.querySelector("[data-appeals-count]");
     if (badge) { badge.textContent = appeals.length; badge.hidden = !appeals.length; }
-    const parts = [MODES[settings.mode]];
-    if (settings.mode !== "cloud") parts.push(settings.local_model);
-    if (settings.mode !== "local") parts.push(PROVIDERS[settings.cloud_provider]);
-    box.innerHTML = `<span class="cqa-dot is-on"></span><span>${esc(parts.join(" · "))}</span>`;
+    const label = `${PROVIDERS[settings.provider] || settings.provider} · ${settings.model}`;
+    box.innerHTML = `<span class="cqa-dot is-on"></span><span>${esc(label)}</span>`;
   } catch (e) {
     box.innerHTML = '<span class="cqa-dot is-off"></span><span>сервер недоступен</span>';
   }

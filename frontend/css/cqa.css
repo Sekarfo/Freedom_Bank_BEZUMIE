@@ -228,8 +228,6 @@
 .cqa-turnlink { display: inline-flex; padding: 0 5px; margin: 0 1px; border-radius: 4px; background: var(--cqa-accent-soft); color: var(--cqa-accent) !important; font-family: var(--cqa-mono); font-size: 12px; cursor: pointer; text-decoration: none !important; }
 .cqa-turnlink:hover { background: #cfe9da; }
 .cqa-review-box { background: var(--cqa-info-soft); border: 1px solid #c3d9f3; border-radius: var(--cqa-radius-sm); padding: 8px 10px; font-size: 13px; }
-.cqa-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
-.cqa-compare > div { background: var(--cqa-surface-2); border-radius: var(--cqa-radius-sm); padding: 8px 10px; font-size: 12px; }
 .cqa-details > summary { cursor: pointer; color: var(--cqa-accent); font-size: 12px; font-weight: 500; }
 .cqa-details[open] > summary { margin-bottom: 6px; }
 .cqa-pre { background: #0f1e18; color: #d6e7dd; padding: 10px; border-radius: var(--cqa-radius-sm); overflow: auto; max-height: 320px; white-space: pre-wrap; word-break: break-word; }

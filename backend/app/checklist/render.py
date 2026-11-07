@@ -1,8 +1,8 @@
-"""Чек-лист → текст для промпта и JSON-схемы ответа моделей.
+"""Чек-лист → текст системного промпта и JSON-схема ответа модели.
 
-Промпты собираются из конфигурации, поэтому новый критерий попадает в оценку без правки кода.
-Схема ответа — объект с ключом на каждый criterion_id: модель не может пропустить критерий,
-а допустимые значения зашиты в схему (enum / null только при na_allowed).
+Промпт и схема собираются из конфигурации, поэтому новый критерий попадает в оценку без правки кода.
+Схема ответа — массив критериев с общей схемой элемента (criterion_id ограничен кодами чек-листа).
+Допустимые значения конкретного критерия проверяет код (llm_common.coerce_value) + один повтор.
 """
 from __future__ import annotations
 
@@ -145,32 +145,7 @@ def render_checklist(checklist: ChecklistConfig) -> str:
     return "\n\n".join(render_criterion(c, i) for i, c in enumerate(checklist.criteria, start=1))
 
 
-# --------------------------------------------------------------------------- JSON-схемы
-def value_schema(c: CriterionConfig) -> dict[str, Any]:
-    if c.type == "binary":
-        base: dict[str, Any] = {"type": "boolean"}
-    else:
-        base = {"type": "integer", "enum": [s.value for s in c.scale or []]}
-    if c.na_allowed:
-        return {"anyOf": [base, {"type": "null"}]}
-    return base
-
-
-def criterion_schema(c: CriterionConfig, kind: str) -> dict[str, Any]:
-    props: dict[str, Any] = {}
-    if kind == "review":
-        props["decision"] = {"type": "string", "enum": ["confirm", "override"]}
-    # Порядок полей важен для локальной модели: сначала доказательство и рассуждение, потом значение.
-    props["evidence_turns"] = {"type": "array", "items": {"type": "integer"}}
-    props["quote"] = {"type": "string"}
-    props["rationale"] = {"type": "string"}
-    if kind == "review":
-        props["override_reason"] = {"type": "string"}
-    props["value"] = value_schema(c)
-    props["confidence"] = {"type": "string", "enum": ["high", "medium", "low"]}
-    return {"type": "object", "properties": props, "required": list(props), "additionalProperties": False}
-
-
+# --------------------------------------------------------------------------- JSON-схема ответа
 FACTS_SCHEMA: dict[str, Any] = {
     "type": "object",
     "properties": {
@@ -187,39 +162,23 @@ FACTS_SCHEMA: dict[str, Any] = {
 }
 
 
-def compact_criteria_schema(crits: list[CriterionConfig], kind: str) -> dict[str, Any]:
-    """Массив критериев с одной общей схемой элемента — маленькая грамматика для облачных API
-    (у Claude полная схема с отдельным объектом на критерий превышает лимит грамматики).
-    Допустимые значения конкретного критерия проверяет код (llm_common.coerce_value) + один повтор."""
-    props: dict[str, Any] = {"criterion_id": {"type": "string", "enum": [c.criterion_id for c in crits]}}
-    if kind == "review":
-        props["decision"] = {"type": "string", "enum": ["confirm", "override"]}
-    props["evidence_turns"] = {"type": "array", "items": {"type": "integer"}}
-    props["quote"] = {"type": "string"}
-    props["rationale"] = {"type": "string"}
-    if kind == "review":
-        props["override_reason"] = {"type": "string"}
-    props["value"] = {"anyOf": [{"type": "boolean"}, {"type": "integer"}, {"type": "null"}]}
-    props["confidence"] = {"type": "string", "enum": ["high", "medium", "low"]}
+def criteria_schema(crits: list[CriterionConfig]) -> dict[str, Any]:
+    """Массив критериев с одной общей схемой элемента — маленькая грамматика для structured output
+    (у Claude схема с отдельным объектом на каждый критерий превышает лимит грамматики).
+    Порядок полей: сначала доказательство и рассуждение, потом значение."""
+    props: dict[str, Any] = {
+        "criterion_id": {"type": "string", "enum": [c.criterion_id for c in crits]},
+        "evidence_turns": {"type": "array", "items": {"type": "integer"}},
+        "quote": {"type": "string"},
+        "rationale": {"type": "string"},
+        "value": {"anyOf": [{"type": "boolean"}, {"type": "integer"}, {"type": "null"}]},
+        "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
+    }
     item = {"type": "object", "properties": props, "required": list(props), "additionalProperties": False}
     return {"type": "array", "items": item}
 
 
-def output_schema(checklist: ChecklistConfig, kind: str, only: list[str] | None = None,
-                  compact: bool = False) -> dict[str, Any]:
-    """kind: primary (этап 1 / облако-судья), review (проверка этапа 1), arbiter (спорные критерии).
-
-    compact=False — объект с ключом на каждый критерий и точными enum (для локальной модели: constrained
-    decoding гарантирует все критерии и допустимые значения); compact=True — массив (для облачных API)."""
-    crits = [c for c in checklist.criteria if only is None or c.criterion_id in only]
-    if compact:
-        criteria_obj = compact_criteria_schema(crits, "review" if kind == "review" else "primary")
-    else:
-        crit_props = {c.criterion_id: criterion_schema(c, "review" if kind == "review" else "primary") for c in crits}
-        criteria_obj = {"type": "object", "properties": crit_props, "required": list(crit_props),
-                        "additionalProperties": False}
-    props: dict[str, Any] = {}
-    if kind == "primary":
-        props["facts"] = FACTS_SCHEMA
-    props["criteria"] = criteria_obj
+def output_schema(checklist: ChecklistConfig) -> dict[str, Any]:
+    """Схема ответа модели: факты диалога + по одному объекту на каждый критерий чек-листа."""
+    props: dict[str, Any] = {"facts": FACTS_SCHEMA, "criteria": criteria_schema(checklist.criteria)}
     return {"type": "object", "properties": props, "required": list(props), "additionalProperties": False}

@@ -60,11 +60,9 @@ class Evaluation(Base):
     conversation_id: Mapped[str] = mapped_column(ForeignKey("conversations.conversation_id"), index=True)
     checklist_version_id: Mapped[int] = mapped_column(ForeignKey("checklist_versions.id"), index=True)
     job_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
-    mode: Mapped[str] = mapped_column(String(10))
-    cloud_provider: Mapped[str | None] = mapped_column(String(20), nullable=True)
-    cloud_model: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    local_model: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    hybrid_strategy: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    # Имена столбцов в БД сохранены прежними (cloud_*), чтобы старые базы открывались без миграции данных.
+    provider: Mapped[str | None] = mapped_column("cloud_provider", String(20), nullable=True)
+    model: Mapped[str | None] = mapped_column("cloud_model", String(100), nullable=True)
     model_name: Mapped[str] = mapped_column(String(300), default="")
     status: Mapped[str] = mapped_column(String(10), index=True)  # ok | error
     error: Mapped[str | None] = mapped_column(Text, nullable=True)

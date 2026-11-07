@@ -8,7 +8,7 @@ from conftest import EXAMPLE_VALUES
 GOOD = {
     "schema_version": "1.0",
     "team_name": "Команда",
-    "model": {"mode": "hybrid", "name": "Qwen3-8B (local) + claude-sonnet-5-5"},
+    "model": {"mode": "external_api", "name": "claude-opus-5-5"},
     "results": [
         {"conversation_id": "demo-001", "status": "ok",
          "criteria": [{"criterion_id": k, "value": v, "rationale": "ok", "evidence_turns": [1]}

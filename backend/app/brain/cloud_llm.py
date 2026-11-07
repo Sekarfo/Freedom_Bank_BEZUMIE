@@ -1,4 +1,4 @@
-"""Этап 2 — облачная модель: Claude (Anthropic) или OpenAI, выбирается переключателем.
+"""Модель-судья: Claude (Anthropic, по умолчанию) или любой OpenAI-совместимый API (OpenAI, OpenRouter).
 
 Claude: структурированный вывод через output_config.format (JSON-схема). Принудительный tool_choice
 и temperature у claude-sonnet-5-5 / claude-opus-5-5 не поддерживаются (400), поэтому не используются.
@@ -20,7 +20,6 @@ FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
 class AnthropicClient:
     provider = "anthropic"
-    kind = "cloud"
 
     def __init__(self, settings: Settings | None = None, model: str | None = None):
         s = settings or get_settings()
@@ -113,7 +112,6 @@ def _schema_note(schema: dict[str, Any]) -> str:
 
 class OpenAIClient:
     provider = "openai"
-    kind = "cloud"
 
     def __init__(self, settings: Settings | None = None, model: str | None = None):
         s = settings or get_settings()

@@ -87,7 +87,7 @@ def conversation_summary(row: ConversationRow, ev: Evaluation | None) -> dict[st
         "evaluation": None if ev is None else {
             "id": ev.id, "status": ev.status, "error": ev.error, "final_score": ev.final_score,
             "ai_score": ev.ai_score, "critical_flag": ev.critical_flag, "needs_review": ev.needs_review,
-            "mode": ev.mode, "model_name": ev.model_name, "checklist_version_id": ev.checklist_version_id,
+            "model_name": ev.model_name, "checklist_version_id": ev.checklist_version_id,
             "created_at": ev.created_at.isoformat(),
         },
     }
@@ -102,8 +102,7 @@ def evaluation_dict(session: Session, ev: Evaluation, include_audit: bool = True
     d = {
         "id": ev.id, "conversation_id": ev.conversation_id, "checklist_version_id": ev.checklist_version_id,
         "checklist_label": version_label(session, ver) if ver else "",
-        "job_id": ev.job_id, "mode": ev.mode, "cloud_provider": ev.cloud_provider, "cloud_model": ev.cloud_model,
-        "local_model": ev.local_model, "hybrid_strategy": ev.hybrid_strategy, "model_name": ev.model_name,
+        "job_id": ev.job_id, "provider": ev.provider, "model": ev.model, "model_name": ev.model_name,
         "status": ev.status, "error": ev.error, "ai_score": ev.ai_score, "final_score": ev.final_score,
         "critical_flag": ev.critical_flag, "needs_review": ev.needs_review, "criteria": ev.criteria,
         "sections": ev.sections, "signals": ev.signals, "cost_usd": ev.cost_usd, "duration_ms": ev.duration_ms,

@@ -2,7 +2,7 @@
 import { API } from "../api.js";
 import { modal, progressBar, toast } from "../components/ui.js";
 import { navigate } from "../router.js";
-import { CHANNELS, ICONS, MODES, PROVIDERS, debounce, esc, fmtDate, fmtMoney, scoreChip } from "../utils.js";
+import { CHANNELS, ICONS, PROVIDERS, debounce, esc, fmtDate, fmtMoney, scoreChip } from "../utils.js";
 
 const state = {
   filters: { dataset: "", channel: "", language: "", status: "", needs_review: "", critical: "", q: "" },
@@ -94,13 +94,9 @@ function renderEvalPanel(view) {
   const s = state.settings;
   const box = view.querySelector("[data-eval-panel]");
   const opts = state.versions.map((v) => `<option value="${v.id}" ${v.id === state.versionId ? "selected" : ""}>${esc(v.label)}</option>`).join("");
-  const mode = [MODES[s.mode]];
-  if (s.mode !== "cloud") mode.push(s.local_model);
-  if (s.mode !== "local") mode.push(PROVIDERS[s.cloud_provider]);
-  if (s.mode === "hybrid") mode.push(s.hybrid_strategy === "blind" ? "слепая + арбитр" : "проверка облаком");
   box.innerHTML = `
     <label class="cqa-field"><span>Версия чек-листа</span><select class="cqa-select" data-version>${opts}</select></label>
-    <div class="cqa-small cqa-muted">Режим: <strong>${esc(mode.join(" · "))}</strong></div>
+    <div class="cqa-small cqa-muted">Модель: <strong>${esc(s.model)}</strong> (${esc(PROVIDERS[s.provider] || s.provider)})</div>
     <div class="cqa-row">
       <button class="cqa-btn cqa-btn--primary" data-eval="selected">Оценить выбранные <span data-sel-count></span></button>
       <button class="cqa-btn" data-eval="unevaluated">Оценить неоценённые</button>
@@ -226,7 +222,7 @@ function table(items) {
       <td>${ev && ev.critical_flag ? `<span class="cqa-chip cqa-chip--bad">${ICONS.flag} нарушение</span>` : ev && ev.status === "ok" ? '<span class="cqa-faint">нет</span>' : "—"}</td>
       <td>${ev && ev.needs_review ? '<span class="cqa-chip cqa-chip--mid">требует проверки</span>' : ev && ev.status === "ok" ? '<span class="cqa-faint">нет</span>' : "—"}</td>
       <td>${status}</td>
-      <td class="cqa-faint">${ev ? esc(MODES[ev.mode] || ev.mode) + " · " + fmtDate(ev.created_at) : esc(it.dataset)}</td>
+      <td class="cqa-faint">${ev ? esc(ev.model_name) + " · " + fmtDate(ev.created_at) : esc(it.dataset)}</td>
     </tr>`;
   }).join("");
   return `<table class="cqa-table"><thead><tr>

@@ -1,8 +1,8 @@
-"""Сравнение режимов и провайдеров с мини-эталоном (раздел 9 спецификации).
+"""Сравнение моделей с мини-эталоном.
 
 Источник прогнозов — БД (все оценки диалогов из эталона, сгруппированные по конфигурации:
-режим + локальная модель + облачная модель + стратегия + версия чек-листа). Дополнительно можно сравнить
-готовые файлы results.json через --results метка=путь (только метрики точности).
+модель + версия чек-листа). Дополнительно можно сравнить готовые файлы results.json
+через --results метка=путь (только метрики точности).
 
 Запуск из корня репозитория:
   python eval/compare.py --gold eval/gold/dev_gold.json [--out eval/report.md] [--results claude=results/dev/results.json]
@@ -54,7 +54,6 @@ def metrics(preds: list[dict[str, Any]], gold: dict[str, dict[str, Any]], langua
     per_crit: dict[str, list[bool]] = defaultdict(list)
     na_hits, crit_tp, crit_fp, crit_fn = [], 0, 0, 0
     mae, mae_kz, acc_kz = [], [], []
-    overrides = helpful = harmful = pairs = 0
     review_crit, review_dialog, costs, times, json_ok = [], [], [], [], []
     errors = 0
     for p in preds:
@@ -85,15 +84,6 @@ def metrics(preds: list[dict[str, Any]], gold: dict[str, dict[str, Any]], langua
                 mae_kz.append(abs(p["final_score"] - g["score"]))
         for c in p.get("criteria") or []:
             review_crit.append(bool(c.get("needs_review")))
-            if c.get("local") is not None and c.get("cloud") is not None:
-                pairs += 1
-                if c.get("agreement") in ("override", "arbiter"):
-                    overrides += 1
-                    gv = g["values"].get(c["criterion_id"], TODO)
-                    if gv != TODO:
-                        lv, fv = c["local"]["value"], c.get("ai_value", c["value"])
-                        helpful += int(fv == gv and lv != gv)
-                        harmful += int(fv != gv and lv == gv)
         if p.get("criteria") is not None:
             review_dialog.append(any(c.get("needs_review") for c in p["criteria"]))
         if p.get("cost") is not None:
@@ -112,9 +102,6 @@ def metrics(preds: list[dict[str, Any]], gold: dict[str, dict[str, Any]], langua
         "mae": mean(mae) if mae else None,
         "critical_precision": crit_tp / (crit_tp + crit_fp) if (crit_tp + crit_fp) else None,
         "critical_recall": crit_tp / (crit_tp + crit_fn) if (crit_tp + crit_fn) else None,
-        "override_rate": overrides / pairs if pairs else None,
-        "helpful_override": helpful / overrides if overrides else None,
-        "harmful_override": harmful / overrides if overrides else None,
         "needs_review_criteria": mean(review_crit) if review_crit else None,
         "needs_review_dialogs": mean(review_dialog) if review_dialog else None,
         "cost_avg": mean(costs) if costs else None,
@@ -138,7 +125,7 @@ def from_db(gold_ids: list[str]) -> tuple[dict[str, list[dict[str, Any]]], dict[
             ConversationRow.conversation_id.in_(gold_ids))}
         evs = s.query(Evaluation).filter(Evaluation.conversation_id.in_(gold_ids)).order_by(Evaluation.id).all()
         for e in evs:
-            label = f"{e.mode} · {e.model_name}" + (f" · {e.hybrid_strategy}" if e.hybrid_strategy else "") + f" · чек-лист {e.checklist_version_id}"
+            label = f"{e.model_name} · чек-лист {e.checklist_version_id}"
             groups[label][e.conversation_id] = e  # последняя оценка конфигурации
             if e.status == "ok" and e.cache_key:
                 repro_groups[label + e.cache_key].append(e)
@@ -184,15 +171,15 @@ def from_results_file(path: Path) -> list[dict[str, Any]]:
 def render(results: dict[str, dict[str, Any]], repro: dict[str, float], gold_n: int) -> str:
     lines = [f"# Сравнение конфигураций с мини-эталоном ({gold_n} диалогов)", ""]
     head = ["Конфигурация", "N", "Ошибок", "JSON с 1-го раза", "Совпадение критериев", "Точность N/A", "MAE итога",
-            "critical P / R", "override", "полезные / вредные", "needs_review (диалоги)", "$ / оценка", "сек (ср / макс)",
+            "critical P / R", "needs_review (диалоги)", "$ / оценка", "сек (ср / макс)",
             "KZ: совпадение / MAE", "Воспроизводимость"]
     lines.append("| " + " | ".join(head) + " |")
     lines.append("|" + "---|" * len(head))
     for label, m in results.items():
         lines.append("| " + " | ".join([
             label, str(m["n"]), str(m["errors"]), _pct(m["json_first_try"]), _pct(m["accuracy"]), _pct(m["na_accuracy"]),
-            _num(m["mae"]), f"{_pct(m['critical_precision'])} / {_pct(m['critical_recall'])}", _pct(m["override_rate"]),
-            f"{_pct(m['helpful_override'])} / {_pct(m['harmful_override'])}", _pct(m["needs_review_dialogs"]),
+            _num(m["mae"]), f"{_pct(m['critical_precision'])} / {_pct(m['critical_recall'])}",
+            _pct(m["needs_review_dialogs"]),
             _num(m["cost_avg"], 4), f"{_num(m['time_avg'], 1)} / {_num(m['time_max'], 1)}",
             f"{_pct(m['kz_accuracy'])} / {_num(m['kz_mae'])}", _pct(repro.get(label)),
         ]) + " |")

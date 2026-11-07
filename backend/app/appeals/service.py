@@ -82,8 +82,6 @@ def decide_appeal(session: Session, appeal_id: int, action: str, new_value: Any,
             c["value"] = new_value
             c["needs_review"] = False
             c["appeal_status"] = "resolved"
-            c["source"] = "reviewer" if action == "change" else c["source"]
-            c["source_label"] = "решение проверяющего" if action == "change" else c.get("source_label")
     # Баллы по критериям канала оценки
     conv_row = session.get(ConversationRow, ev.conversation_id)
     if conv_row is not None:

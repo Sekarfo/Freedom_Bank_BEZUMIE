@@ -1,4 +1,4 @@
-"""Pydantic-схемы: диалог, чек-лист, сигналы, вердикты моделей, API."""
+"""Pydantic-схемы: диалог, чек-лист, сигналы, вердикты модели, API."""
 from __future__ import annotations
 
 from typing import Any, Literal, Union
@@ -159,8 +159,6 @@ class Verdict(BaseModel):
     evidence_turns: list[int] = Field(default_factory=list)
     quote: str = ""
     confidence: Confidence = "medium"
-    decision: Literal["confirm", "override"] | None = None
-    override_reason: str | None = None
 
 
 class LLMCallInfo(BaseModel):
@@ -180,7 +178,7 @@ class LLMCallInfo(BaseModel):
 
 
 class StageResult(BaseModel):
-    """Разобранный ответ одной модели (этап 1, 2 или арбитр)."""
+    """Разобранный ответ модели-судьи."""
     verdicts: dict[str, Verdict] = Field(default_factory=dict)
     facts: dict[str, Any] = Field(default_factory=dict)
     call: LLMCallInfo
@@ -190,10 +188,7 @@ class StageResult(BaseModel):
 
 # --------------------------------------------------------------------------- API
 class EvaluationOptions(BaseModel):
-    mode: Literal["local", "cloud", "hybrid"] = "hybrid"
-    cloud_provider: Literal["anthropic", "openai"] = "anthropic"
-    local_model: str = "qwen3-8b"
-    hybrid_strategy: Literal["review", "blind"] = "review"
+    provider: Literal["anthropic", "openai"] = "anthropic"
 
 
 class EvaluationRequest(BaseModel):
@@ -201,10 +196,7 @@ class EvaluationRequest(BaseModel):
     all_in_dataset: str | None = None
     only_unevaluated: bool = False
     checklist_version_id: int | None = None
-    mode: Literal["local", "cloud", "hybrid"] | None = None
-    cloud_provider: Literal["anthropic", "openai"] | None = None
-    local_model: str | None = None
-    hybrid_strategy: Literal["review", "blind"] | None = None
+    provider: Literal["anthropic", "openai"] | None = None
     force: bool = False
 
 
@@ -245,8 +237,5 @@ class AppealDecision(BaseModel):
 
 
 class SettingsUpdate(BaseModel):
-    mode: Literal["local", "cloud", "hybrid"] | None = None
-    cloud_provider: Literal["anthropic", "openai"] | None = None
-    local_model: str | None = None
-    hybrid_strategy: Literal["review", "blind"] | None = None
+    provider: Literal["anthropic", "openai"] | None = None
     checklist_version_id: int | None = None

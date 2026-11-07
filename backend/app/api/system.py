@@ -1,4 +1,4 @@
-"""Аналитика, экспорт, статус системы и настройки режима."""
+"""Аналитика, экспорт, статус системы и настройки модели."""
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -7,10 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.analytics.service import summary
 from app.brain.cloud_llm import cloud_configured
-from app.brain.local_llm import local_status
 from app.brain.prompts import PROMPT_VERSIONS
 from app.checklist.service import get_version
-from app.config import CLAUDE_PRICES, LOCAL_MODELS, get_settings
+from app.config import CLAUDE_PRICES, get_settings
 from app.db import get_db
 from app.export.results_json import build_results, export_checklist
 from app.export.validator import validate_results
@@ -49,23 +48,16 @@ def export_validate(dataset: str = "DEV", checklist_version_id: int | None = Non
 
 
 @router.get("/system/status")
-async def system_status(db: Session = Depends(get_db)):
+def system_status():
     s = get_settings()
-    local = await local_status(s)
-    key, tag, display = s.resolve_local_model(get_runtime_settings(db).get("local_model"))
-    local["selected_tag"] = tag
-    local["selected_available"] = any(m == tag or m == f"{tag}:latest" for m in local["models"])
     return {
-        "local": local,
-        "cloud": {
+        "providers": {
             "anthropic": {"configured": cloud_configured("anthropic", s), "model": s.anthropic_model,
                           "price": CLAUDE_PRICES.get(s.anthropic_model), "effort": s.anthropic_effort},
             "openai": {"configured": cloud_configured("openai", s), "model": s.openai_model or None,
-                       "price": s.price_for("openai", s.openai_model)},
+                       "base_url": s.openai_base_url or None, "price": s.price_for("openai", s.openai_model)},
         },
         "organizers_api_configured": bool(s.organizers_api_url),
-        "local_models": [{"key": k, "tag": s.local_tag_map().get(k, v["tag"]), "display": v["display"]}
-                         for k, v in LOCAL_MODELS.items()],
         "prompt_versions": PROMPT_VERSIONS,
         "team_name": s.team_name,
     }
@@ -74,6 +66,7 @@ async def system_status(db: Session = Depends(get_db)):
 @router.get("/settings")
 def get_settings_api(db: Session = Depends(get_db)):
     rt = get_runtime_settings(db)
+    rt["model"] = get_settings().model_for(rt["provider"])
     try:
         ver = get_version(db, rt.get("checklist_version_id"))
         rt["checklist_version_id_effective"] = ver.id
@@ -91,5 +84,6 @@ def put_settings(body: SettingsUpdate, db: Session = Depends(get_db)):
         except KeyError as exc:
             raise HTTPException(404, str(exc)) from exc
     rt = update_runtime_settings(db, values)
+    rt["model"] = get_settings().model_for(rt["provider"])
     reset_clients()
     return rt

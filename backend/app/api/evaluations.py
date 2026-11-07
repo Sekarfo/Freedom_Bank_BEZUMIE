@@ -37,8 +37,7 @@ async def start_evaluation(req: EvaluationRequest, db: Session = Depends(get_db)
         ids = [i for i in ids if i not in done or done[i].status != "ok"]
         if not ids:
             return {"job_id": None, "message": "Все выбранные диалоги уже оценены этой версией чек-листа"}
-    opts = resolve_options(req.mode, req.cloud_provider, req.local_model, req.hybrid_strategy,
-                           get_runtime_settings(db))
+    opts = resolve_options(req.provider, get_runtime_settings(db))
     db.commit()  # job создаётся в отдельной сессии
     job_id = create_job(ids, ver.id, opts, req.force)
     start_job_background(job_id)

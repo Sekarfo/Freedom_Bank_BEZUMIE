@@ -101,7 +101,7 @@ def get_conversation(conversation_id: str, evaluation_id: int | None = None, db:
         "conversation": conv.model_dump(exclude={"raw"}) | {"has_audio": bool(row.audio_url)},
         "evaluation": evaluation_dict(db, ev) if ev else None,
         "history": [{"id": h.id, "created_at": h.created_at.isoformat(), "status": h.status,
-                     "final_score": h.final_score, "mode": h.mode, "model_name": h.model_name,
+                     "final_score": h.final_score, "model_name": h.model_name,
                      "checklist_version_id": h.checklist_version_id} for h in history],
     }
 

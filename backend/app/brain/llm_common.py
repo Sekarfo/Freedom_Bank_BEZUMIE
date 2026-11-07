@@ -25,10 +25,9 @@ class LLMResponse:
 
 
 class LLMClient(Protocol):
-    provider: str      # ollama | openai-compatible | anthropic | openai | mock
-    model: str         # фактический ID / тег модели
+    provider: str      # anthropic | openai | mock
+    model: str         # фактический ID модели
     display_name: str  # для model.name в results.json
-    kind: str          # local | cloud
 
     async def complete_json(self, system: str, user: str, schema: dict[str, Any], schema_name: str) -> LLMResponse: ...
 
@@ -38,9 +37,7 @@ _FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.I | re.M)
 
 
 def parse_json_text(text: str) -> dict[str, Any]:
-    t = (text or "").strip()
-    t = re.sub(r"<think>.*?</think>", "", t, flags=re.S).strip()  # на случай, если рассуждение попало в ответ
-    t = _FENCE.sub("", t).strip()
+    t = _FENCE.sub("", (text or "").strip()).strip()
     try:
         data = json.loads(t)
     except json.JSONDecodeError:
@@ -98,7 +95,7 @@ def coerce_turns(raw: Any) -> list[int]:
     return out
 
 
-def parse_output(text: str, checklist: ChecklistConfig, kind: str, only: list[str] | None = None
+def parse_output(text: str, checklist: ChecklistConfig
                  ) -> tuple[dict[str, Verdict], dict[str, Any], dict[str, str], str | None]:
     """→ (вердикты, факты, ошибки по критериям, фатальная ошибка)."""
     try:
@@ -114,8 +111,6 @@ def parse_output(text: str, checklist: ChecklistConfig, kind: str, only: list[st
     verdicts: dict[str, Verdict] = {}
     invalid: dict[str, str] = {}
     for c in checklist.criteria:
-        if only is not None and c.criterion_id not in only:
-            continue
         item = crit.get(c.criterion_id)
         if not isinstance(item, dict):
             invalid[c.criterion_id] = "критерий отсутствует в ответе"
@@ -128,7 +123,6 @@ def parse_output(text: str, checklist: ChecklistConfig, kind: str, only: list[st
             invalid[c.criterion_id] = err
             continue
         conf = str(item.get("confidence") or "medium").strip().lower()
-        decision = str(item.get("decision") or "").strip().lower() or None
         verdicts[c.criterion_id] = Verdict(
             criterion_id=c.criterion_id,
             value=value,
@@ -136,8 +130,6 @@ def parse_output(text: str, checklist: ChecklistConfig, kind: str, only: list[st
             evidence_turns=coerce_turns(item.get("evidence_turns")),
             quote=str(item.get("quote") or "").strip(),
             confidence=conf if conf in ("high", "medium", "low") else "medium",
-            decision=decision if decision in ("confirm", "override") else None,
-            override_reason=(str(item.get("override_reason") or "").strip() or None),
         )
     facts = data.get("facts") if isinstance(data.get("facts"), dict) else {}
     return verdicts, facts, invalid, None
@@ -152,11 +144,10 @@ def _retry_note(fatal: str | None, invalid: dict[str, str]) -> str:
     return "\n".join(lines)
 
 
-async def run_stage(client: LLMClient, *, stage: str, prompt_version: str, system: str, user: str,
-                    schema: dict[str, Any], checklist: ChecklistConfig, kind: str,
-                    only: list[str] | None = None) -> StageResult:
-    """Вызов модели + валидация. При ошибке схемы — ровно один повтор с текстом ошибки."""
-    info = LLMCallInfo(provider=client.provider, model=client.model, prompt_version=prompt_version, stage=stage,
+async def call_judge(client: LLMClient, *, prompt_version: str, system: str, user: str,
+                     schema: dict[str, Any], checklist: ChecklistConfig) -> StageResult:
+    """Вызов модели-судьи + валидация. При ошибке схемы — ровно один повтор с текстом ошибки."""
+    info = LLMCallInfo(provider=client.provider, model=client.model, prompt_version=prompt_version, stage="judge",
                        meta={"display_name": client.display_name})
     verdicts: dict[str, Verdict] = {}
     facts: dict[str, Any] = {}
@@ -169,7 +160,7 @@ async def run_stage(client: LLMClient, *, stage: str, prompt_version: str, syste
     for attempt in (1, 2):
         info.attempts = attempt
         try:
-            resp = await client.complete_json(system, user + note, schema, f"cqa_{kind}")
+            resp = await client.complete_json(system, user + note, schema, "cqa_evaluation")
         except LLMError as exc:
             info.errors.append(f"попытка {attempt}: {exc}")
             break
@@ -182,7 +173,7 @@ async def run_stage(client: LLMClient, *, stage: str, prompt_version: str, syste
             usage_total[k] = usage_total.get(k, 0) + int(v or 0)
         cost_total = None if (cost_total is None or resp.cost_usd is None) else cost_total + resp.cost_usd
         info.meta.update(resp.meta)
-        v, f, inv, fatal = parse_output(resp.text, checklist, kind, only)
+        v, f, inv, fatal = parse_output(resp.text, checklist)
         # Объединяем: валидные вердикты повтора заменяют прежние, прежние валидные сохраняются.
         verdicts.update(v)
         facts = f or facts
@@ -194,7 +185,7 @@ async def run_stage(client: LLMClient, *, stage: str, prompt_version: str, syste
         if not fatal and not invalid:
             break
         note = _retry_note(fatal, invalid)
-    # duration_ms — чистое время модели (без ожидания очереди к локальной модели), wall_ms — полное.
+    # duration_ms — чистое время модели (без ожидания в очереди параллельных запросов), wall_ms — полное.
     wall_ms = int((time.perf_counter() - t0) * 1000)
     info.duration_ms = model_ms or wall_ms
     info.meta["wall_ms"] = wall_ms

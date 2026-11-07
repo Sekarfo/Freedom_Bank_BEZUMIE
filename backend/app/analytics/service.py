@@ -53,7 +53,7 @@ def summary(session: Session, dataset: str | None = None, channel: str | None = 
             d = per.setdefault(c["criterion_id"], {"criterion_id": c["criterion_id"], "title": c.get("title"),
                                                    "weight": c.get("weight"), "is_critical_flag": c.get("is_critical_flag"),
                                                    "n": 0, "ratios": [], "no": 0, "na": 0, "yes": 0,
-                                                   "override": 0, "pairs": 0, "needs_review": 0, "appealed": 0})
+                                                   "needs_review": 0, "appealed": 0})
             d["n"] += 1
             v = c.get("value")
             if v is None:
@@ -64,10 +64,6 @@ def summary(session: Session, dataset: str | None = None, channel: str | None = 
                 d["yes"] += 1
             if c.get("points") is not None and c.get("max_points"):
                 d["ratios"].append(c["points"] / c["max_points"])
-            if c.get("local") is not None and c.get("cloud") is not None:
-                d["pairs"] += 1
-                if c.get("agreement") in ("override", "arbiter"):
-                    d["override"] += 1
             if c.get("needs_review"):
                 d["needs_review"] += 1
             if c.get("review"):
@@ -80,7 +76,6 @@ def summary(session: Session, dataset: str | None = None, channel: str | None = 
             "is_critical_flag": d["is_critical_flag"], "evaluated": d["n"],
             "avg_ratio": _avg(d["ratios"]) if d["ratios"] else None,
             "share_no": round(d["no"] / n, 3), "share_na": round(d["na"] / n, 3), "share_yes": round(d["yes"] / n, 3),
-            "override_rate": round(d["override"] / d["pairs"], 3) if d["pairs"] else None,
             "needs_review_rate": round(d["needs_review"] / n, 3), "appealed": d["appealed"],
         })
     criteria.sort(key=lambda x: (x["avg_ratio"] is None, x["avg_ratio"] if x["avg_ratio"] is not None else 0))
@@ -106,7 +101,8 @@ def summary(session: Session, dataset: str | None = None, channel: str | None = 
     appeals = session.scalars(select(Appeal).where(Appeal.evaluation_id.in_(ev_ids))).all() if ev_ids else []
     changed = sum(1 for a in appeals if a.status == "resolved" and a.action == "change")
     costs = [e.cost_usd for e in evs.values() if e.cost_usd]
-    agreement = Counter(c.get("agreement") for e in ok for c in e.criteria)
+    # Проверка доказательств кодом: verified / corrected — цитата найдена, остальное — на проверку человеку.
+    evidence = Counter(c.get("evidence_status") or "missing" for e in ok for c in e.criteria)
 
     return {
         "filters": {"dataset": dataset, "channel": channel, "language": language, "from": date_from, "to": date_to},
@@ -127,7 +123,7 @@ def summary(session: Session, dataset: str | None = None, channel: str | None = 
         "appeals": {"total": len(appeals), "open": sum(1 for a in appeals if a.status == "open"),
                     "resolved": sum(1 for a in appeals if a.status == "resolved"), "changed": changed,
                     "rate": round(len(appeals) / len(ok), 3) if ok else None},
-        "agreement": dict(agreement),
+        "evidence": dict(evidence),
         "cost": {"total_usd": round(sum(costs), 4), "avg_per_evaluation_usd": round(mean(costs), 5) if costs else None,
                  "evaluations_with_cost": len(costs)},
         "avg_duration_sec": _avg([e.duration_ms / 1000 for e in evs.values() if e.duration_ms]),

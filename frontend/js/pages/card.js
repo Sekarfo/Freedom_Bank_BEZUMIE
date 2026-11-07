@@ -2,7 +2,7 @@
 import { API } from "../api.js";
 import { modal, progressBar, scoreRing, toast } from "../components/ui.js";
 import {
-  AGREEMENT, CHANNELS, CONFIDENCE, EVIDENCE, ICONS, MODES, SPEAKERS, esc, fmtClock, fmtDate, fmtMoney, fmtNum,
+  CHANNELS, CONFIDENCE, EVIDENCE, ICONS, SPEAKERS, esc, fmtClock, fmtDate, fmtMoney, fmtNum,
   fmtScore, linkifyTurns, scoreTone, turnLink, valueChip, valueLabel,
 } from "../utils.js";
 
@@ -30,7 +30,7 @@ function draw() {
   const { view, conv, ev, data } = ctx;
   const n = conv.turns.length;
   const hist = data.history.map((h) => `<option value="${h.id}" ${ev && ev.id === h.id ? "selected" : ""}>
-      #${h.id} · ${esc(fmtDate(h.created_at))} · ${esc(MODES[h.mode] || h.mode)} · ${h.status === "ok" ? fmtScore(h.final_score) : "ошибка"}</option>`).join("");
+      #${h.id} · ${esc(fmtDate(h.created_at))} · ${esc(h.model_name || "")} · ${h.status === "ok" ? fmtScore(h.final_score) : "ошибка"}</option>`).join("");
   const curVersion = ev ? ev.checklist_version_id : (ctx.versions[0] || {}).id;
   const verOpts = ctx.versions.map((v) => `<option value="${v.id}" ${v.id === curVersion ? "selected" : ""}>${esc(v.label)}</option>`).join("");
 
@@ -157,7 +157,7 @@ function criterionHtml(c, n) {
     </div>
     <div class="cqa-crit__body">
       <div class="cqa-crit__meta">
-        <span class="cqa-chip cqa-chip--info" title="Источник вердикта">${esc(review && review.action === "change" ? "решение проверяющего" : (AGREEMENT[c.agreement] || c.source_label || c.source))}</span>
+        ${review && review.action === "change" ? '<span class="cqa-chip cqa-chip--info">решение проверяющего</span>' : ""}
         <span class="cqa-chip cqa-chip--${c.confidence === "high" ? "good" : c.confidence === "medium" ? "outline" : "mid"}">${esc(CONFIDENCE[c.confidence] || c.confidence)}</span>
         ${evNote}
         ${c.needs_review ? '<span class="cqa-chip cqa-chip--mid">требует проверки</span>' : ""}
@@ -171,24 +171,12 @@ function criterionHtml(c, n) {
           <div>Исходная оценка ИИ: ${valueChip(c, c.ai_value)} → решение проверяющего: ${valueChip(c, review.value)} → финал: ${valueChip(c, c.value)}</div>
           <div><strong>Причина:</strong> ${esc(review.reason)}</div>
           <div class="cqa-faint">${esc(review.reviewer)} · ${esc(fmtDate(review.decided_at))} · комментарий апелляции: «${esc(review.comment || "")}»</div></div>` : ""}
-      ${modelsCompare(c)}
     </div>
     <div class="cqa-crit__foot">
       <button class="cqa-btn cqa-btn--sm" data-show="${esc(c.criterion_id)}">Перейти к фрагменту</button>
       <button class="cqa-btn cqa-btn--sm" data-appeal="${esc(c.criterion_id)}" ${appealOpen || review ? "disabled" : ""}>${review ? "Апелляция рассмотрена" : appealOpen ? "Апелляция подана" : "Оспорить оценку"}</button>
     </div>
   </article>`;
-}
-
-function modelsCompare(c) {
-  const parts = [];
-  const block = (name, v) => v ? `<div><strong>${name}</strong>: ${valueChip(c, v.value)}${v.decision ? ` <span class="cqa-faint">${v.decision === "confirm" ? "подтвердил" : "исправил"}</span>` : ""}
-      <div class="cqa-muted">${esc(v.rationale || "")}</div>${v.override_reason ? `<div class="cqa-faint">Причина исправления: ${esc(v.override_reason)}</div>` : ""}</div>` : "";
-  if (c.local) parts.push(block("Локальная модель", c.local));
-  if (c.cloud) parts.push(block("Облачная модель", c.cloud));
-  if (c.arbiter) parts.push(block("Арбитр", c.arbiter));
-  if (parts.length < 2) return "";
-  return `<details class="cqa-details"><summary>Вердикты моделей</summary><div class="cqa-compare">${parts.join("")}</div></details>`;
 }
 
 function auditHtml(ev) {

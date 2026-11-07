@@ -40,6 +40,7 @@ def configure(url: str) -> Engine:
     from app import models  # noqa: F401  регистрирует таблицы
 
     Base.metadata.create_all(engine)
+    _migrate(engine)
     SessionLocal.configure(bind=engine)
     _engine = engine
 
@@ -48,6 +49,24 @@ def configure(url: str) -> Engine:
     with session_scope() as s:
         ensure_default_checklist(s)
     return engine
+
+
+# Столбцы и настройки режимов «локальная модель» / «гибрид», которых больше нет.
+_OBSOLETE_COLUMNS = ("mode", "local_model", "hybrid_strategy")
+_OBSOLETE_SETTINGS = ("mode", "local_model", "hybrid_strategy", "cloud_provider")
+
+
+def _migrate(engine: Engine) -> None:
+    """Старые базы: удалить устаревшие столбцы (mode был NOT NULL и ломал бы вставку новых оценок)."""
+    from sqlalchemy import inspect, text
+
+    cols = {c["name"] for c in inspect(engine).get_columns("evaluations")}
+    with engine.begin() as conn:
+        for col in _OBSOLETE_COLUMNS:
+            if col in cols:
+                conn.execute(text(f"ALTER TABLE evaluations DROP COLUMN {col}"))
+        keys = ", ".join(f"'{k}'" for k in _OBSOLETE_SETTINGS)
+        conn.execute(text(f"DELETE FROM settings WHERE key IN ({keys})"))
 
 
 def get_engine() -> Engine:

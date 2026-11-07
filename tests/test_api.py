@@ -1,10 +1,10 @@
-"""Сквозной сценарий через HTTP API (mock-модели вместо Ollama/Claude)."""
+"""Сквозной сценарий через HTTP API (mock-модель вместо Claude)."""
 import time
 
 import pytest
 from fastapi.testclient import TestClient
 
-from conftest import EXAMPLE_VALUES, SAMPLE_RECORD, MockClient, primary_json, review_json
+from conftest import EXAMPLE_VALUES, SAMPLE_RECORD, MockClient, judge_json
 
 
 @pytest.fixture
@@ -12,11 +12,8 @@ def client(temp_db, monkeypatch):
     from app import jobs
     from app.main import app
 
-    local = MockClient(lambda s, u, sc: primary_json(EXAMPLE_VALUES))
-    cloud = MockClient(lambda s, u, sc: review_json(EXAMPLE_VALUES, EXAMPLE_VALUES), kind="cloud",
-                       model="claude-sonnet-5-5")
-    monkeypatch.setattr(jobs, "_local_factory", lambda key: local)
-    monkeypatch.setattr(jobs, "_cloud_factory", lambda provider: cloud)
+    judge = MockClient(lambda s, u, sc: judge_json(EXAMPLE_VALUES), model="claude-opus-5-5")
+    monkeypatch.setattr(jobs, "_client_factory", lambda provider: judge)
     with TestClient(app) as c:
         yield c
 
@@ -38,14 +35,14 @@ def test_full_flow(client):
     items = client.get("/api/conversations").json()["items"]
     assert items[0]["conversation_id"] == "test-ru-001" and items[0]["evaluation"] is None
 
-    r = client.post("/api/evaluations", json={"conversation_ids": ["test-ru-001"], "mode": "hybrid"})
+    r = client.post("/api/evaluations", json={"conversation_ids": ["test-ru-001"]})
     assert r.status_code == 200, r.text
     job = _wait_job(client, r.json()["job_id"])
     assert job["status"] == "done" and job["failed"] == 0
 
     card = client.get("/api/conversations/test-ru-001").json()
     ev = card["evaluation"]
-    assert ev["final_score"] == 85.38 and ev["model_name"] == "mock-model (local) + claude-sonnet-5-5"
+    assert ev["final_score"] == 85.38 and ev["model_name"] == "claude-opus-5-5"
     assert len(card["conversation"]["turns"]) == 8
 
     # апелляция → решение → пересчёт
@@ -85,7 +82,9 @@ def test_full_flow(client):
     assert summary["ok"] == 1 and summary["appeals"]["changed"] == 1
 
     st = client.get("/api/system/status").json()
-    assert "local" in st and "cloud" in st
+    assert set(st["providers"]) == {"anthropic", "openai"}
+    settings = client.get("/api/settings").json()
+    assert settings["provider"] == "anthropic" and settings["model"]
 
 
 def test_invalid_checklist_rejected(client):

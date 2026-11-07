@@ -97,9 +97,9 @@ def cmd_run(args: argparse.Namespace) -> int:
         rt = get_runtime_settings(s)
         ver = get_version(s, args.checklist_version)
         version_id = ver.id
-        opts = resolve_options(args.mode, args.provider, args.local_model, args.strategy, rt)
-    _print(f"• Оцениваю {len(ids)} диалогов: mode={opts.mode}, provider={opts.cloud_provider}, "
-           f"local={opts.local_model}, strategy={opts.hybrid_strategy}, чек-лист v{ver.version} (id={version_id})")
+        opts = resolve_options(args.provider, rt)
+    _print(f"• Оцениваю {len(ids)} диалогов: модель {get_settings().model_for(opts.provider)} "
+           f"({opts.provider}), чек-лист v{ver.version} (id={version_id})")
     job_id = create_job(ids, version_id, opts, args.force)
     t0 = time.perf_counter()
 
@@ -160,21 +160,13 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 def cmd_status(_: argparse.Namespace) -> int:
     from app.brain.cloud_llm import cloud_configured
-    from app.brain.local_llm import local_status
 
     s = get_settings()
-    st = asyncio.run(local_status(s))
-    key, tag, display = s.resolve_local_model()
-    _print(f"Локальная модель: {display} (тег {tag}) — сервер {'доступен' if st['reachable'] else 'НЕДОСТУПЕН'} "
-           f"[{s.local_llm_backend} {s.local_llm_base_url}]")
-    if st["reachable"]:
-        _print(f"  модели на сервере: {', '.join(st['models']) or 'нет'}")
-        if not any(m in (tag, f'{tag}:latest') for m in st["models"]):
-            _print(f"  ! модели {tag} нет — выполните: ollama pull {tag}")
-    else:
-        _print(f"  {st['error']}")
-    _print(f"Claude: {'ключ задан' if cloud_configured('anthropic', s) else 'ключ НЕ задан'} ({s.anthropic_model})")
-    _print(f"OpenAI: {'настроен' if cloud_configured('openai', s) else 'НЕ настроен'} ({s.openai_model or '—'})")
+    _print(f"Провайдер по умолчанию: {s.default_provider} → модель {s.model_for(s.default_provider)}")
+    _print(f"Claude: {'ключ задан' if cloud_configured('anthropic', s) else 'ключ НЕ задан'} "
+           f"({s.anthropic_model}, effort {s.anthropic_effort})")
+    _print(f"OpenAI-совместимый API: {'настроен' if cloud_configured('openai', s) else 'НЕ настроен'} "
+           f"({s.openai_model or '—'}{' · ' + s.openai_base_url if s.openai_base_url else ''})")
     _print(f"API организаторов: {'задан' if s.organizers_api_url else 'НЕ задан'}")
     return 0
 
@@ -217,10 +209,8 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--dataset", help="DEV | PROD | ... (по умолчанию = group_id)")
     r.add_argument("--from-file")
     r.add_argument("--skip-fetch", action="store_true", help="не запрашивать API, оценить уже загруженный набор")
-    r.add_argument("--mode", choices=["local", "cloud", "hybrid"])
-    r.add_argument("--provider", choices=["anthropic", "openai"])
-    r.add_argument("--local-model")
-    r.add_argument("--strategy", choices=["review", "blind"])
+    r.add_argument("--provider", choices=["anthropic", "openai"],
+                   help="anthropic — Claude (по умолчанию), openai — OpenAI-совместимый API из .env")
     r.add_argument("--checklist-version", type=int, help="ID версии чек-листа (по умолчанию — из настроек/последняя)")
     r.add_argument("--ids", help="только эти conversation_id через запятую")
     r.add_argument("--limit", type=int)
@@ -243,7 +233,7 @@ def main(argv: list[str] | None = None) -> int:
     v.add_argument("--checklist-version", type=int, help="ID версии чек-листа, против которой проверять (после замены критерия)")
     v.set_defaults(func=cmd_validate)
 
-    st = sub.add_parser("status", help="доступность локальной модели и ключей облака")
+    st = sub.add_parser("status", help="модель по умолчанию и наличие ключей")
     st.set_defaults(func=cmd_status)
 
     args = p.parse_args(argv)
