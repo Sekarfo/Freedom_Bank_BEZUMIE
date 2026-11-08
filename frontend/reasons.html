@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="description" content="BEZUMIE CQA — причины обращений клиентов, исходы и качество по каждой причине."/>
+    <link rel="icon" href="/brand/favicon.ico" sizes="any"/>
+    <link rel="icon" href="/brand/favicon-32x32.png" type="image/png" sizes="32x32"/>
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png"/>
+    <link rel="preload" href="/brand/CoFoSans-VF.woff2" as="font" type="font/woff2" crossorigin/>
+    <script>
+      (() => { let theme; try { theme = localStorage.getItem('cqa-theme'); } catch {} if (theme !== 'light' && theme !== 'dark') theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; document.documentElement.dataset.theme = theme; document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#051525' : '#ffffff'; })();
+    </script>
+    <title>BEZUMIE CQA — причины обращений</title>
+    <!-- Стили основного приложения подключает reasons.js (имя файла собранного CSS меняется при каждой сборке). -->
+    <link rel="stylesheet" href="/reasons/reasons.css"/>
+    <script type="module" src="/reasons/reasons.js"></script>
+  </head>
+  <body><div id="root" class="reasons-loading"></div></body>
+</html>

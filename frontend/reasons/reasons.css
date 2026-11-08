@@ -1,0 +1,100 @@
+/* Экран «Причины обращений». Базовые компоненты (оболочка, карточки, панели, таблицы, статусы, кнопки)
+   берутся из стилей основного приложения; здесь — только то, чего в нём нет. Цвета — его же переменные. */
+
+.reasons-loading { min-height: 100vh; background: var(--canvas, #f4f6f8); }
+.reasons-page .panel { margin-bottom: 24px; }
+.reasons-page .panel-title .badge { flex-shrink: 0; }
+.reasons-page .filters { padding: 18px 24px; flex-wrap: wrap; }
+.reasons-page .filters .filter-field { flex: 0 1 180px; }
+.reasons-page .filters .filter-field > span { position: static; width: auto; height: auto; margin: 0; clip: auto; }
+.reasons-page .stat-card strong small { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+.reasons-page .stat-card .stat-sub { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.reasons-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.reasons-split > .panel { margin-bottom: 24px; }
+@media (max-width: 1100px) { .reasons-split { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+
+/* Доля причины */
+.share-cell { min-width: 160px; }
+.share-bar { display: flex; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); }
+.share-bar > div { flex: 1; height: 6px; border-radius: 6px; background: var(--border); overflow: hidden; min-width: 60px; }
+.share-bar i { display: block; height: 100%; border-radius: 6px; background: var(--freedom-gradient, var(--brand)); }
+
+/* Исходы обращений: решено / передано / не решено / ушёл */
+.outcome-bar { display: flex; height: 8px; border-radius: 8px; overflow: hidden; background: var(--border); min-width: 120px; }
+.outcome-bar i { display: block; height: 100%; }
+.oc-resolved { background: var(--brand); }
+.oc-escalated { background: #7d8dee; }
+.oc-unresolved { background: var(--danger); }
+.oc-client_left { background: var(--warning); opacity: .85; }
+.oc-no_request { background: var(--subtle); opacity: .5; }
+.outcome-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 0 24px 18px; font-size: 11px; color: var(--muted); }
+.outcome-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.outcome-legend b { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.outcome-note { margin-top: 6px; font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+/* Таблица тем с раскрытием подтем */
+.reason-name { display: flex; flex-direction: column; gap: 4px; text-align: left; background: none; border: 0; padding: 0; color: var(--text); }
+.reason-name strong { font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+.reason-name small { color: var(--muted); font-size: 11px; }
+.reason-name code, .reasons-page code { font-family: inherit; font-size: 11px; color: var(--muted); }
+.reason-name .chev { transition: transform .15s; color: var(--muted); }
+.reason-name[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.subtopic-row td { background: var(--surface-alt); }
+.subtopic-row td:first-child { padding-left: 46px; }
+.weak-cell { font-size: 12px; }
+.weak-cell .verdict { margin-right: 6px; }
+
+/* Находки */
+.finding { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; padding: 18px 24px; border-top: 1px solid var(--border); }
+.finding:first-of-type { border-top: 0; }
+.finding .gap { align-self: start; min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+.finding h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.finding p { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+.finding .finding-bars { grid-column: 2; display: grid; grid-template-columns: 110px minmax(0, 1fr) 46px; gap: 6px 10px; align-items: center; font-size: 11px; color: var(--muted); max-width: 520px; }
+.finding .finding-bars > div { height: 6px; border-radius: 6px; background: var(--border); overflow: hidden; }
+.finding .finding-bars i { display: block; height: 100%; border-radius: 6px; }
+.finding .bar-reason { background: var(--danger); }
+.finding .bar-base { background: var(--subtle); opacity: .55; }
+.dialog-links { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.dialog-links a { font-size: 11px; padding: 4px 8px; border-radius: 5px; background: var(--surface-alt); color: var(--text); text-decoration: none; border: 1px solid var(--border); }
+.dialog-links a:hover { border-color: var(--green); color: var(--green); }
+
+/* Тепловая карта «причина × критерий» */
+.heat-table th.crit { white-space: normal; min-width: 92px; line-height: 1.3; vertical-align: bottom; }
+.heat-table td.heat { text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 12px; padding: 10px 8px; }
+.heat-table td.heat small { display: block; font-weight: 400; color: var(--muted); font-size: 10px; margin-top: 2px; }
+.heat-hi { background: var(--success-bg); color: var(--success); }
+.heat-mid { background: var(--warning-bg); color: var(--warning); }
+.heat-lo { background: var(--danger-bg); color: var(--danger); }
+.heat-na { color: var(--subtle); font-weight: 400 !important; }
+.heat-table td:first-child { min-width: 200px; }
+
+/* Списки с полосками (доп. причины) */
+.bar-list { list-style: none; margin: 0; padding: 4px 24px 22px; display: flex; flex-direction: column; gap: 12px; }
+.bar-list li { display: grid; grid-template-columns: minmax(0, 1fr) 40px; gap: 4px 12px; font-size: 13px; }
+.bar-list li > div { grid-column: 1 / -1; height: 6px; border-radius: 6px; background: var(--border); overflow: hidden; }
+.bar-list li i { display: block; height: 100%; background: #7d8dee; border-radius: 6px; }
+.bar-list li b { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* Новые темы */
+.other-list { list-style: none; margin: 0; padding: 0 24px 16px; display: flex; flex-direction: column; gap: 8px; font-size: 12px; }
+.other-list li { padding: 10px 12px; border-radius: 8px; background: var(--surface-alt); color: var(--text); }
+.other-list li small { color: var(--muted); margin-left: 6px; }
+.panel-actions { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 24px 22px; align-items: center; }
+.panel-actions .form-hint { font-size: 11px; color: var(--muted); }
+.proposal { margin: 0 24px 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; }
+.proposal header { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.proposal h3 { margin: 0; font-size: 13px; font-weight: 600; }
+.proposal p { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.proposal ul { margin: 8px 0 0; padding-left: 18px; font-size: 12px; color: var(--text); }
+
+/* Справочник */
+.taxonomy { padding: 0 24px 22px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.taxonomy section { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.taxonomy h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.taxonomy ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+.taxonomy li { display: flex; justify-content: space-between; gap: 10px; }
+.taxonomy li span { color: var(--text); }
+.reasons-page .spin { animation: reasons-spin 1s linear infinite; }
+@keyframes reasons-spin { to { transform: rotate(360deg); } }
+.reasons-page .button:disabled { opacity: .55; cursor: default; }

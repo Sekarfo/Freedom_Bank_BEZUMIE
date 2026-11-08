@@ -180,6 +180,17 @@ def test_checklist_edit_from_ui(ui):
     assert r.status_code == 422 and "Опишите критерий" in r.json()["error"]
 
 
+def test_reasons_page_served_and_linked(ui):
+    """Страница причин отдаётся сервером, а пункт меню и переходы по адресу есть в собранном интерфейсе."""
+    assert "/reasons/reasons.js" in ui.get("/reasons.html").text
+    for path in ("/reasons/reasons.js", "/reasons/icons.js", "/reasons/reasons.css"):
+        assert ui.get(path).status_code == 200, path
+    index = ui.get("/").text
+    bundle = ui.get(index.split('src="')[1].split('"')[0]).text
+    assert "/*cqa-reasons-patch*/" in bundle and 'location.assign("/reasons.html")' in bundle
+    assert '#dialog=' in bundle and 'reasons:"Причины обращений"' in bundle
+
+
 def test_legacy_api_still_available(ui):
     _imported(ui)
     assert ui.get("/api/v1/health").json()["status"] == "ok"
