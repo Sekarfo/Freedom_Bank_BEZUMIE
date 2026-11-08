@@ -136,8 +136,9 @@ def _fetch_group(group_id: str) -> dict[str, Any]:
 def import_file(payload: Any = Body(...), db: Session = Depends(get_db)):
     group = "UPLOAD"
     if isinstance(payload, dict):
-        group = str(payload.get("groupId") or payload.get("group_id") or (payload.get("data") or {}).get("group_id")
-                    or "UPLOAD").strip().upper() or "UPLOAD"
+        data = payload.get("data") or {}
+        group = str(payload.get("groupId") or payload.get("group_id") or data.get("group_id")
+                    or data.get("dataset_group_id") or "UPLOAD").strip().upper() or "UPLOAD"
     return _import(db, payload, group)
 
 
