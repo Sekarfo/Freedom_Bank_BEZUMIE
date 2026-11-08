@@ -1,4 +1,4 @@
-# CQA — Conversation Quality Analytics
+# BEZUMIE team, CQA — Conversation Quality Analytics
 
 Прототип оценки качества диалогов операторов Freedom Broker (хакатон Freedom Broker × Data Challenge NU).
 
