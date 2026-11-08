@@ -89,6 +89,7 @@ def conversation_summary(row: ConversationRow, ev: Evaluation | None) -> dict[st
             "ai_score": ev.ai_score, "critical_flag": ev.critical_flag, "needs_review": ev.needs_review,
             "model_name": ev.model_name, "checklist_version_id": ev.checklist_version_id,
             "created_at": ev.created_at.isoformat(),
+            "reason_code": ev.reason_code, "reason_title": (ev.reason or {}).get("title"), "resolution": ev.resolution,
         },
     }
 
@@ -108,6 +109,8 @@ def evaluation_dict(session: Session, ev: Evaluation, include_audit: bool = True
         "sections": ev.sections, "signals": ev.signals, "cost_usd": ev.cost_usd, "duration_ms": ev.duration_ms,
         "created_at": ev.created_at.isoformat(), "last_requested_at": ev.last_requested_at.isoformat(),
         "appeals": [appeal_dict(a) for a in appeals],
+        "reason": ev.reason, "reason_code": ev.reason_code, "resolution": ev.resolution,
+        "reason_taxonomy_version_id": ev.reason_taxonomy_version_id,
     }
     if include_audit:
         d["audit"] = ev.audit

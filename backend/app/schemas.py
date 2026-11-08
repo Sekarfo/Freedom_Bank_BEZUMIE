@@ -181,6 +181,7 @@ class StageResult(BaseModel):
     """Разобранный ответ модели-судьи."""
     verdicts: dict[str, Verdict] = Field(default_factory=dict)
     facts: dict[str, Any] = Field(default_factory=dict)
+    reason: dict[str, Any] | None = None   # сырой блок reason (причина обращения), проверяется отдельно
     call: LLMCallInfo
     valid: bool = False             # ответ разобран и содержит хотя бы один валидный критерий
     invalid_criteria: dict[str, str] = Field(default_factory=dict)
@@ -239,3 +240,19 @@ class AppealDecision(BaseModel):
 class SettingsUpdate(BaseModel):
     provider: Literal["anthropic", "openai"] | None = None
     checklist_version_id: int | None = None
+    reason_taxonomy_version_id: int | None = None
+
+
+class ReasonTaxonomyCreate(BaseModel):
+    topics: list[dict[str, Any]]
+    note: str = ""
+    name: str = ""
+    activate: bool = False   # сразу сделать версией по умолчанию для новых оценок
+
+
+class ReasonDiscoverRequest(BaseModel):
+    dataset: str | None = None
+    min_cluster: int = Field(default=3, ge=2, le=100)
+    limit: int = Field(default=300, ge=1, le=2000)
+    use_llm: bool = True
+    provider: Literal["anthropic", "openai"] | None = None

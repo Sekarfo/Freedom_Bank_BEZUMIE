@@ -53,6 +53,12 @@ class Settings(BaseSettings):
     cloud_timeout_sec: float = 300.0
     cloud_concurrency: int = 4
 
+    # Персональные данные: маскировать перед отправкой транскрипта в модель (brain/pii/).
+    # pii_ner: slovnet — NER для имён (Natasha, CPU, без сети); off — только правила (имена из контекста «меня зовут»).
+    # Если NER включён, но не загрузился, оценка завершается status=error — данные не уходят наружу немаскированными.
+    pii_masking: bool = True
+    pii_ner: str = "slovnet"
+
     # Прочее
     team_name: str = "Freedom_Bank_BEZUMIE"
     quote_match_threshold: float = 0.85

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.analytics.service import summary
 from app.brain.cloud_llm import cloud_configured
+from app.brain import pii
 from app.brain.prompts import PROMPT_VERSIONS
 from app.checklist.service import get_version
 from app.config import CLAUDE_PRICES, get_settings
@@ -59,6 +60,7 @@ def system_status():
         },
         "organizers_api_configured": bool(s.organizers_api_url),
         "prompt_versions": PROMPT_VERSIONS,
+        "pii_masking": pii.status(s),
         "team_name": s.team_name,
     }
 
@@ -83,6 +85,11 @@ def put_settings(body: SettingsUpdate, db: Session = Depends(get_db)):
             get_version(db, values["checklist_version_id"])
         except KeyError as exc:
             raise HTTPException(404, str(exc)) from exc
+    if values.get("reason_taxonomy_version_id") is not None:
+        from app.models import ReasonTaxonomyVersion
+
+        if db.get(ReasonTaxonomyVersion, values["reason_taxonomy_version_id"]) is None:
+            raise HTTPException(404, f"Версия справочника причин {values['reason_taxonomy_version_id']} не найдена")
     rt = update_runtime_settings(db, values)
     rt["model"] = get_settings().model_for(rt["provider"])
     reset_clients()

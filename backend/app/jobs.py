@@ -12,6 +12,7 @@ from app.brain.cloud_llm import make_cloud_client
 from app.brain.pipeline import Pipeline, cache_key
 from app.checklist.service import get_version, to_config
 from app.config import get_settings
+from app.reasons import service as reasons
 from app.db import session_scope
 from app.models import ConversationRow, Evaluation, Job
 from app.schemas import EvaluationOptions
@@ -45,7 +46,8 @@ def _now() -> datetime:
 
 
 async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, version_id: int,
-                                opts: EvaluationOptions, force: bool, job_id: str | None) -> tuple[int | None, bool, str]:
+                                opts: EvaluationOptions, force: bool, job_id: str | None,
+                                taxonomy_version_id: int | None = None) -> tuple[int | None, bool, str]:
     """→ (evaluation_id, из кэша, статус)."""
     with session_scope() as s:
         row = s.get(ConversationRow, conversation_id)
@@ -54,8 +56,10 @@ async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, versio
         conv = to_conversation(row)
         ver = get_version(s, version_id)
         checklist = to_config(ver)
+        tax_ver = reasons.get_version(s, taxonomy_version_id)
+        tax_ver_id, taxonomy = tax_ver.id, reasons.to_taxonomy(tax_ver)
         model = get_settings().model_for(opts.provider)
-        key = cache_key(conv, checklist.for_channel(conv.channel), opts.provider, model)
+        key = cache_key(conv, checklist.for_channel(conv.channel), opts.provider, model, taxonomy)
         if not force:
             candidates = s.scalars(select(Evaluation).where(Evaluation.cache_key == key, Evaluation.status == "ok",
                                                             Evaluation.checklist_version_id == ver.id)
@@ -73,7 +77,8 @@ async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, versio
                 s.flush()
                 return ev.id, True, ev.status
 
-    outcome = await pipeline.evaluate(conv, checklist, opts)
+    outcome = await pipeline.evaluate(conv, checklist, opts, taxonomy)
+    reason = outcome.reason or {}
 
     with session_scope() as s:
         ev = Evaluation(
@@ -84,6 +89,8 @@ async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, versio
             needs_review=outcome.needs_review, criteria=outcome.criteria, sections=outcome.sections,
             signals=outcome.signals, audit=outcome.audit, cost_usd=outcome.cost_usd, duration_ms=outcome.duration_ms,
             created_at=_now(), last_requested_at=_now(),
+            reason_taxonomy_version_id=tax_ver_id if outcome.reason else None, reason=outcome.reason,
+            reason_code=reason.get("primary"), reason_topic=reason.get("topic"), resolution=reason.get("resolution"),
         )
         s.add(ev)
         s.flush()
@@ -111,15 +118,20 @@ def _copy_evaluation(src: Evaluation, conversation_id: str, job_id: str | None, 
         audit=copy.deepcopy(src.audit or {}) | {"copied_from_evaluation": src.id,
                                                   "copied_from_conversation": src.conversation_id},
         cost_usd=0.0, duration_ms=0, created_at=_now(), last_requested_at=_now(),
+        reason_taxonomy_version_id=src.reason_taxonomy_version_id, reason=copy.deepcopy(src.reason),
+        reason_code=src.reason_code, reason_topic=src.reason_topic, resolution=src.resolution,
     )
 
 
-def create_job(conversation_ids: list[str], version_id: int, opts: EvaluationOptions, force: bool) -> str:
+def create_job(conversation_ids: list[str], version_id: int, opts: EvaluationOptions, force: bool,
+               taxonomy_version_id: int | None = None) -> str:
     job_id = uuid.uuid4().hex[:12]
     with session_scope() as s:
+        # Версия справочника причин фиксируется при создании задачи: смена по ходу не перемешает версии.
+        tax_id = reasons.get_version(s, taxonomy_version_id).id
         s.add(Job(id=job_id, status="queued", total=len(conversation_ids),
                   params={"conversation_ids": conversation_ids, "checklist_version_id": version_id,
-                          "options": opts.model_dump(), "force": force}))
+                          "reason_taxonomy_version_id": tax_id, "options": opts.model_dump(), "force": force}))
     return job_id
 
 
@@ -133,13 +145,14 @@ async def run_job(job_id: str, pipeline: Pipeline | None = None, on_progress=Non
     ids: list[str] = params["conversation_ids"]
     version_id: int = params["checklist_version_id"]
     force: bool = params.get("force", False)
+    tax_id: int | None = params.get("reason_taxonomy_version_id")
     gate = asyncio.Semaphore(max(2, get_settings().cloud_concurrency))
     lock = asyncio.Lock()
 
     async def one(cid: str) -> None:
         async with gate:
             try:
-                ev_id, from_cache, status = await evaluate_conversation(pipeline, cid, version_id, opts, force, job_id)
+                ev_id, from_cache, status = await evaluate_conversation(pipeline, cid, version_id, opts, force, job_id, tax_id)
             except Exception as exc:  # noqa: BLE001  — запись не пропадает: фиксируем ошибку
                 ev_id, from_cache, status = None, False, "error"
                 with session_scope() as s:

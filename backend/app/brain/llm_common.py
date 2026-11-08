@@ -96,17 +96,19 @@ def coerce_turns(raw: Any) -> list[int]:
 
 
 def parse_output(text: str, checklist: ChecklistConfig
-                 ) -> tuple[dict[str, Verdict], dict[str, Any], dict[str, str], str | None]:
-    """→ (вердикты, факты, ошибки по критериям, фатальная ошибка)."""
+                 ) -> tuple[dict[str, Verdict], dict[str, Any], dict[str, str], str | None, Any]:
+    """→ (вердикты, факты, ошибки по критериям, фатальная ошибка, сырой блок reason).
+    Причину обращения проверяет reasons.taxonomy.normalize_reason: на баллы она не влияет и повтора не вызывает."""
     try:
         data = parse_json_text(text)
     except (ValueError, json.JSONDecodeError) as exc:
-        return {}, {}, {}, f"невалидный JSON: {exc}"
+        return {}, {}, {}, f"невалидный JSON: {exc}", None
+    reason = data.get("reason")
     crit = data.get("criteria")
     if isinstance(crit, list):
         crit = {str(i.get("criterion_id")): i for i in crit if isinstance(i, dict)}
     if not isinstance(crit, dict):
-        return {}, {}, {}, "в ответе нет объекта criteria"
+        return {}, {}, {}, "в ответе нет объекта criteria", reason
 
     verdicts: dict[str, Verdict] = {}
     invalid: dict[str, str] = {}
@@ -132,7 +134,7 @@ def parse_output(text: str, checklist: ChecklistConfig
             confidence=conf if conf in ("high", "medium", "low") else "medium",
         )
     facts = data.get("facts") if isinstance(data.get("facts"), dict) else {}
-    return verdicts, facts, invalid, None
+    return verdicts, facts, invalid, None, reason
 
 
 def _retry_note(fatal: str | None, invalid: dict[str, str]) -> str:
@@ -151,6 +153,7 @@ async def call_judge(client: LLMClient, *, prompt_version: str, system: str, use
                        meta={"display_name": client.display_name})
     verdicts: dict[str, Verdict] = {}
     facts: dict[str, Any] = {}
+    reason: Any = None
     invalid: dict[str, str] = {}
     usage_total: dict[str, int] = {}
     cost_total: float | None = 0.0
@@ -173,7 +176,8 @@ async def call_judge(client: LLMClient, *, prompt_version: str, system: str, use
             usage_total[k] = usage_total.get(k, 0) + int(v or 0)
         cost_total = None if (cost_total is None or resp.cost_usd is None) else cost_total + resp.cost_usd
         info.meta.update(resp.meta)
-        v, f, inv, fatal = parse_output(resp.text, checklist)
+        v, f, inv, fatal, r = parse_output(resp.text, checklist)
+        reason = r if isinstance(r, dict) else reason
         # Объединяем: валидные вердикты повтора заменяют прежние, прежние валидные сохраняются.
         verdicts.update(v)
         facts = f or facts
@@ -193,7 +197,8 @@ async def call_judge(client: LLMClient, *, prompt_version: str, system: str, use
     info.cost_usd = round(cost_total, 6) if cost_total is not None else None
     info.raw_text = info.raw_texts[-1] if info.raw_texts else None
     info.ok = bool(verdicts) and not invalid
-    return StageResult(verdicts=verdicts, facts=facts, call=info, valid=bool(verdicts), invalid_criteria=invalid)
+    return StageResult(verdicts=verdicts, facts=facts, reason=reason, call=info, valid=bool(verdicts),
+                       invalid_criteria=invalid)
 
 
 def cost_from_usage(price: dict[str, float] | None, usage: dict[str, int]) -> float | None:

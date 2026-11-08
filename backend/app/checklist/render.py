@@ -178,7 +178,13 @@ def criteria_schema(crits: list[CriterionConfig]) -> dict[str, Any]:
     return {"type": "array", "items": item}
 
 
-def output_schema(checklist: ChecklistConfig) -> dict[str, Any]:
-    """Схема ответа модели: факты диалога + по одному объекту на каждый критерий чек-листа."""
-    props: dict[str, Any] = {"facts": FACTS_SCHEMA, "criteria": criteria_schema(checklist.criteria)}
+def output_schema(checklist: ChecklistConfig, taxonomy: Any = None) -> dict[str, Any]:
+    """Схема ответа модели: факты диалога, причина обращения (если задан справочник) и по одному объекту
+    на каждый критерий чек-листа. Порядок полей = порядок генерации: сначала факты и причина, потом критерии."""
+    props: dict[str, Any] = {"facts": FACTS_SCHEMA}
+    if taxonomy is not None:
+        from app.reasons.taxonomy import reason_schema
+
+        props["reason"] = reason_schema(taxonomy)
+    props["criteria"] = criteria_schema(checklist.criteria)
     return {"type": "object", "properties": props, "required": list(props), "additionalProperties": False}

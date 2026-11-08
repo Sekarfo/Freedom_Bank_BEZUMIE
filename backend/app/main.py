@@ -11,7 +11,8 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app import __version__
-from app.api import appeals, checklists, conversations, evaluations, system
+from app.api import appeals, checklists, conversations, evaluations, reasons, system
+from app.brain import pii
 from app.config import get_settings
 from app.db import configure
 from app.jobs import mark_stale_jobs
@@ -23,6 +24,10 @@ log = logging.getLogger("cqa")
 async def lifespan(_: FastAPI):
     configure(get_settings().database_url)
     mark_stale_jobs()
+    # Загружаем NER маскирования заранее: первая оценка не ждёт загрузки, а проблема видна сразу в логе.
+    st = pii.status(get_settings())
+    if st["enabled"] and not st.get("ner_ready"):
+        log.error("Маскирование персональных данных недоступно, оценки будут завершаться ошибкой: %s", st.get("error"))
     yield
 
 
@@ -44,7 +49,7 @@ def health():
     return {"status": "ok", "version": __version__}
 
 
-for module in (conversations, checklists, evaluations, appeals, system):
+for module in (conversations, checklists, evaluations, appeals, reasons, system):
     app.include_router(module.router)
 
 _frontend = Path(get_settings().frontend_dir)

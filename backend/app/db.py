@@ -45,15 +45,20 @@ def configure(url: str) -> Engine:
     _engine = engine
 
     from app.checklist.service import ensure_default_checklist
+    from app.reasons.service import ensure_default_taxonomy
 
     with session_scope() as s:
         ensure_default_checklist(s)
+        ensure_default_taxonomy(s)
     return engine
 
 
 # Столбцы и настройки режимов «локальная модель» / «гибрид», которых больше нет.
 _OBSOLETE_COLUMNS = ("mode", "local_model", "hybrid_strategy")
 _OBSOLETE_SETTINGS = ("mode", "local_model", "hybrid_strategy", "cloud_provider")
+_NEW_COLUMNS = {"reason_taxonomy_version_id": "INTEGER", "reason_code": "VARCHAR(100)", "reason_topic": "VARCHAR(50)",
+                "resolution": "VARCHAR(20)", "reason": "JSON"}
+_NEW_INDEXED = ("reason_taxonomy_version_id", "reason_code", "reason_topic", "resolution")
 
 
 def _migrate(engine: Engine) -> None:
@@ -65,6 +70,12 @@ def _migrate(engine: Engine) -> None:
         for col in _OBSOLETE_COLUMNS:
             if col in cols:
                 conn.execute(text(f"ALTER TABLE evaluations DROP COLUMN {col}"))
+        # Причины обращений: create_all не добавляет столбцы в существующую таблицу.
+        for col, ddl in _NEW_COLUMNS.items():
+            if col not in cols:
+                conn.execute(text(f"ALTER TABLE evaluations ADD COLUMN {col} {ddl}"))
+                if col in _NEW_INDEXED:
+                    conn.execute(text(f"CREATE INDEX IF NOT EXISTS ix_evaluations_{col} ON evaluations ({col})"))
         keys = ", ".join(f"'{k}'" for k in _OBSOLETE_SETTINGS)
         conn.execute(text(f"DELETE FROM settings WHERE key IN ({keys})"))
 

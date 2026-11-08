@@ -8,11 +8,11 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.models import SettingRow
 
-KEYS = ("provider", "checklist_version_id")
+KEYS = ("provider", "checklist_version_id", "reason_taxonomy_version_id")
 
 
 def defaults() -> dict[str, Any]:
-    return {"provider": get_settings().default_provider, "checklist_version_id": None}
+    return {"provider": get_settings().default_provider, "checklist_version_id": None, "reason_taxonomy_version_id": None}
 
 
 def get_runtime_settings(session: Session) -> dict[str, Any]:

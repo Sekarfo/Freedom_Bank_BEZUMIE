@@ -79,6 +79,25 @@ class Evaluation(Base):
     duration_ms: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     last_requested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    # Причина обращения (reasons/): код «тема.подтема», тема, исход и полный разбор; None — оценка до справочника.
+    reason_taxonomy_version_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    reason_code: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    reason_topic: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    resolution: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    reason: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
+class ReasonTaxonomyVersion(Base):
+    """Версия справочника причин обращений. Изменение = новая версия; оценки ссылаются на свою."""
+    __tablename__ = "reason_taxonomy_versions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    version: Mapped[int] = mapped_column(Integer, unique=True)
+    name: Mapped[str] = mapped_column(String(200), default="")
+    note: Mapped[str] = mapped_column(Text, default="")
+    topics: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
+    taxonomy_hash: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
 class Appeal(Base):

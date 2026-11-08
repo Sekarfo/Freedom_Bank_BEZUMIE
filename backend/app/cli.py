@@ -192,6 +192,36 @@ def _report(errors: list[str], warnings: list[str]) -> None:
             _print(f"  ! {w}")
 
 
+def cmd_discover_reasons(args: argparse.Namespace) -> int:
+    from app.db import configure, session_scope
+    from app.jobs import _client_factory, resolve_options
+    from app.reasons import service
+    from app.reasons.discovery import as_json, discover
+    from app.settings_store import get_runtime_settings
+
+    configure(get_settings().database_url)
+    with session_scope() as s:
+        tax = service.to_taxonomy(service.get_version(s))
+        client = None if args.no_llm else _client_factory(resolve_options(None, get_runtime_settings(s)).provider)
+        res = asyncio.run(discover(s, tax, dataset=args.dataset, min_cluster=args.min_cluster, limit=args.limit,
+                                   client=client))
+    _print(f"• В «Прочем» {res['other_total']} обращений, способ: {res['method']}, стоимость ${res['cost_usd']:.4f}")
+    if res["error"]:
+        _print(f"! {res['error']}")
+    for p in res["proposals"]:
+        head = "новая подтема" if p["kind"] == "new_subtopic" else "подходит под существующую"
+        _print(f"  [{p['count']:>3}] {head}: {p['code']} — {p['title']}")
+        for ex in p["examples"][:3]:
+            _print(f"         · {ex['description']}")
+    _print(f"• Не сгруппировано: {res['unassigned']}")
+    if args.out:
+        out = _path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(as_json(res), encoding="utf-8")
+        _print(f"✓ Записан {out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -235,6 +265,14 @@ def main(argv: list[str] | None = None) -> int:
 
     st = sub.add_parser("status", help="модель по умолчанию и наличие ключей")
     st.set_defaults(func=cmd_status)
+
+    dr = sub.add_parser("discover-reasons", help="предложить новые подтемы причин по обращениям из «Прочего»")
+    dr.add_argument("--dataset")
+    dr.add_argument("--min-cluster", type=int, default=3)
+    dr.add_argument("--limit", type=int, default=300)
+    dr.add_argument("--no-llm", action="store_true", help="без модели: группировка по общим словам")
+    dr.add_argument("--out", help="сохранить результат (JSON) — proposed_topics можно отправить новой версией")
+    dr.set_defaults(func=cmd_discover_reasons)
 
     args = p.parse_args(argv)
     return args.func(args)
