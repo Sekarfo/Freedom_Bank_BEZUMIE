@@ -22,10 +22,11 @@ _BACKGROUND: set[asyncio.Task] = set()
 _clients: dict[str, Any] = {}
 
 
-def _client_factory(provider: str):
-    if provider not in _clients:
-        _clients[provider] = make_cloud_client(provider)
-    return _clients[provider]
+def _client_factory(provider: str, model: str | None = None):
+    key = f"{provider}:{model or ''}"
+    if key not in _clients:
+        _clients[key] = make_cloud_client(provider, model=model)
+    return _clients[key]
 
 
 def reset_clients() -> None:
@@ -58,7 +59,7 @@ async def evaluate_conversation(pipeline: Pipeline, conversation_id: str, versio
         checklist = to_config(ver)
         tax_ver = reasons.get_version(s, taxonomy_version_id)
         tax_ver_id, taxonomy = tax_ver.id, reasons.to_taxonomy(tax_ver)
-        model = get_settings().model_for(opts.provider)
+        model = opts.model or get_settings().model_for(opts.provider)
         key = cache_key(conv, checklist.for_channel(conv.channel), opts.provider, model, taxonomy)
         if not force:
             candidates = s.scalars(select(Evaluation).where(Evaluation.cache_key == key, Evaluation.status == "ok",
@@ -136,12 +137,13 @@ def create_job(conversation_ids: list[str], version_id: int, opts: EvaluationOpt
 
 
 async def run_job(job_id: str, pipeline: Pipeline | None = None, on_progress=None) -> dict[str, Any]:  # noqa: ANN001
-    pipeline = pipeline or default_pipeline()
     with session_scope() as s:
         job = s.get(Job, job_id)
         params = dict(job.params)
         job.status = "running"
     opts = EvaluationOptions(**params["options"])
+    # Модель выбирается на задачу (интерфейс): клиент той же модели переиспользуется между задачами.
+    pipeline = pipeline or Pipeline(lambda provider: _client_factory(provider, opts.model))
     ids: list[str] = params["conversation_ids"]
     version_id: int = params["checklist_version_id"]
     force: bool = params.get("force", False)

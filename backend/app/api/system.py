@@ -18,7 +18,7 @@ from app.jobs import reset_clients
 from app.schemas import SettingsUpdate
 from app.settings_store import get_runtime_settings, update_runtime_settings
 
-router = APIRouter(prefix="/api", tags=["system"])
+router = APIRouter(prefix="/api/v1", tags=["system"])
 
 
 @router.get("/analytics/summary")

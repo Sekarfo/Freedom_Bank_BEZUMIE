@@ -13,7 +13,7 @@ from app.schemas import FetchRequest, UploadRequest
 from app.store import (conversation_summary, evaluation_dict, latest_evaluation, latest_evaluations_map,
                        to_conversation, upsert_conversations)
 
-router = APIRouter(prefix="/api", tags=["conversations"])
+router = APIRouter(prefix="/api/v1", tags=["conversations"])
 
 
 def _dataset_label(group_id: str, dataset: str | None) -> str:

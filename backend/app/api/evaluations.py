@@ -13,7 +13,7 @@ from app.schemas import EvaluationRequest
 from app.settings_store import get_runtime_settings
 from app.store import evaluation_dict, latest_evaluations_map
 
-router = APIRouter(prefix="/api", tags=["evaluations"])
+router = APIRouter(prefix="/api/v1", tags=["evaluations"])
 
 
 @router.post("/evaluations")

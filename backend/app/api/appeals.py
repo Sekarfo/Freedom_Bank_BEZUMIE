@@ -10,7 +10,7 @@ from app.models import Evaluation
 from app.schemas import AppealCreate, AppealDecision
 from app.store import appeal_dict, evaluation_dict
 
-router = APIRouter(prefix="/api/appeals", tags=["appeals"])
+router = APIRouter(prefix="/api/v1/appeals", tags=["appeals"])
 
 
 @router.post("")

@@ -316,44 +316,44 @@ def api(temp_db, monkeypatch):
     from app import jobs
     from app.main import app
 
-    monkeypatch.setattr(jobs, "_client_factory", lambda provider: MockClient(_judge))
+    monkeypatch.setattr(jobs, "_client_factory", lambda provider, model=None: MockClient(_judge))
     with TestClient(app) as c:
         yield c
 
 
 def test_api_taxonomy_versions(api, tax):
-    t = api.get("/api/reasons/taxonomy").json()
+    t = api.get("/api/v1/reasons/taxonomy").json()
     assert t["version"] == 1 and t["active"] and "resolved" in t["resolutions"]
-    assert api.post("/api/reasons/versions", json={"topics": [{"code": "X y", "title": "", "subtopics": []}]}).status_code == 422
+    assert api.post("/api/v1/reasons/versions", json={"topics": [{"code": "X y", "title": "", "subtopics": []}]}).status_code == 422
 
     topics = tax.topics_dump() + [{"code": "crypto", "title": "Крипто", "subtopics": [{"code": "buy", "title": "Покупка"}]}]
-    v2 = api.post("/api/reasons/versions", json={"topics": topics, "note": "крипто"}).json()
+    v2 = api.post("/api/v1/reasons/versions", json={"topics": topics, "note": "крипто"}).json()
     assert v2["version"] == 2
-    assert api.get("/api/reasons/taxonomy").json()["version"] == 2           # без выбора в настройках — последняя
-    assert api.post("/api/reasons/versions/1/activate").json()["active"]
-    assert api.get("/api/reasons/taxonomy").json()["version"] == 1
-    assert [v["active"] for v in api.get("/api/reasons/versions").json()] == [False, True]
-    d = api.get(f"/api/reasons/diff/{t['id']}/{v2['id']}").json()
+    assert api.get("/api/v1/reasons/taxonomy").json()["version"] == 2           # без выбора в настройках — последняя
+    assert api.post("/api/v1/reasons/versions/1/activate").json()["active"]
+    assert api.get("/api/v1/reasons/taxonomy").json()["version"] == 1
+    assert [v["active"] for v in api.get("/api/v1/reasons/versions").json()] == [False, True]
+    d = api.get(f"/api/v1/reasons/diff/{t['id']}/{v2['id']}").json()
     assert [a["code"] for a in d["added"]] == ["crypto.buy"] and d["removed"] == []
-    assert "`crypto.buy`" in api.get(f"/api/reasons/versions/{v2['id']}/prompt").json()["text"]
-    assert api.put("/api/settings", json={"reason_taxonomy_version_id": 999}).status_code == 404
+    assert "`crypto.buy`" in api.get(f"/api/v1/reasons/versions/{v2['id']}/prompt").json()["text"]
+    assert api.put("/api/v1/settings", json={"reason_taxonomy_version_id": 999}).status_code == 404
 
 
 def test_api_analytics_and_discover(api):
     recs = [_record(i, WITHDRAW if i < 3 else TARIFF) for i in range(6)]
-    api.post("/api/conversations/upload", json={"dataset": "DEV", "payload": {"records": recs}})
-    job_id = api.post("/api/evaluations", json={"all_in_dataset": "DEV"}).json()["job_id"]
+    api.post("/api/v1/conversations/upload", json={"dataset": "DEV", "payload": {"records": recs}})
+    job_id = api.post("/api/v1/evaluations", json={"all_in_dataset": "DEV"}).json()["job_id"]
     from test_api import _wait_job
 
     assert _wait_job(api, job_id)["failed"] == 0
-    card = api.get("/api/conversations/c-00").json()["evaluation"]
+    card = api.get("/api/v1/conversations/c-00").json()["evaluation"]
     assert card["reason_code"] == "money.withdrawal" and card["reason"]["title"] == "Деньги → Вывод средств"
-    item = api.get("/api/conversations", params={"dataset": "DEV"}).json()["items"][0]["evaluation"]
+    item = api.get("/api/v1/conversations", params={"dataset": "DEV"}).json()["items"][0]["evaluation"]
     assert item["reason_code"] and item["resolution"]
 
-    rep = api.get("/api/analytics/reasons", params={"dataset": "DEV"}).json()
+    rep = api.get("/api/v1/analytics/reasons", params={"dataset": "DEV"}).json()
     assert rep["classified"] == 6 and rep["findings"][0]["reason"] == "money.withdrawal"
-    assert api.get("/api/analytics/reasons", params={"level": "x"}).status_code == 422
+    assert api.get("/api/v1/analytics/reasons", params={"level": "x"}).status_code == 422
 
-    res = api.post("/api/reasons/discover", json={"dataset": "DEV", "use_llm": False}).json()
+    res = api.post("/api/v1/reasons/discover", json={"dataset": "DEV", "use_llm": False}).json()
     assert res["method"] == "none" and res["other_total"] == 1 and "меньше порога" in res["error"]

@@ -190,6 +190,7 @@ class StageResult(BaseModel):
 # --------------------------------------------------------------------------- API
 class EvaluationOptions(BaseModel):
     provider: Literal["anthropic", "openai"] = "anthropic"
+    model: str | None = None   # None — модель провайдера из .env; иначе — выбранная для этой задачи
 
 
 class EvaluationRequest(BaseModel):

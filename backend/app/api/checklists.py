@@ -12,7 +12,7 @@ from app.db import get_db
 from app.models import Checklist, ChecklistVersion
 from app.schemas import ChecklistCreate, ChecklistVersionCreate
 
-router = APIRouter(prefix="/api/checklists", tags=["checklists"])
+router = APIRouter(prefix="/api/v1/checklists", tags=["checklists"])
 
 
 @router.get("")

@@ -202,5 +202,5 @@ def cloud_configured(provider: str, settings: Settings | None = None) -> bool:
     return bool((s.openai_api_key or os.environ.get("OPENAI_API_KEY")) and s.openai_model)
 
 
-def make_cloud_client(provider: str, settings: Settings | None = None):
-    return AnthropicClient(settings) if provider == "anthropic" else OpenAIClient(settings)
+def make_cloud_client(provider: str, settings: Settings | None = None, model: str | None = None):
+    return AnthropicClient(settings, model) if provider == "anthropic" else OpenAIClient(settings, model)

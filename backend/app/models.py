@@ -143,3 +143,22 @@ class SettingRow(Base):
 
     key: Mapped[str] = mapped_column(String(50), primary_key=True)
     value: Mapped[Any] = mapped_column(JSON)
+
+
+class Annotation(Base):
+    """Ручная разметка проверяющего (эталон для сравнения с ИИ). Одна на пару «диалог + версия чек-листа»."""
+    __tablename__ = "annotations"
+    __table_args__ = (UniqueConstraint("conversation_id", "checklist_version_id"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    conversation_id: Mapped[str] = mapped_column(String(200), index=True)
+    checklist_version_id: Mapped[int] = mapped_column(Integer, index=True)
+    status: Mapped[str] = mapped_column(String(10), default="draft", index=True)   # draft | approved
+    split: Mapped[str] = mapped_column(String(20), default="unassigned")           # unassigned | calibration | validation
+    scenario_group: Mapped[str] = mapped_column(String(200), default="")
+    reviewer: Mapped[str] = mapped_column(String(100), default="")
+    notes: Mapped[str] = mapped_column(Text, default="")
+    decisions: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)  # решения в формате интерфейса
+    source: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow, index=True)

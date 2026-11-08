@@ -15,7 +15,7 @@ from app.reasons.taxonomy import RESOLUTIONS, render_taxonomy
 from app.schemas import ReasonDiscoverRequest, ReasonTaxonomyCreate
 from app.settings_store import get_runtime_settings, update_runtime_settings
 
-router = APIRouter(prefix="/api", tags=["reasons"])
+router = APIRouter(prefix="/api/v1", tags=["reasons"])
 
 
 def _version_or_404(db: Session, version_id: int) -> ReasonTaxonomyVersion:
