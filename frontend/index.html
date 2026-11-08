@@ -1,33 +1,20 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CQA · Оценка качества диалогов</title>
-  <link rel="stylesheet" href="css/cqa.css">
-  <script src="config.js"></script>
-</head>
-<body style="margin:0">
-  <div id="cqa-app" class="cqa-root">
-    <header class="cqa-header">
-      <div class="cqa-header__brand">
-        <span class="cqa-header__logo" aria-hidden="true">CQA</span>
-        <span class="cqa-header__title">Оценка качества диалогов<small>Freedom Broker · ОКК</small></span>
-      </div>
-      <nav class="cqa-nav" aria-label="Разделы">
-        <a class="cqa-nav__link" href="#/conversations" data-page="conversations">Диалоги</a>
-        <a class="cqa-nav__link" href="#/checklists" data-page="checklists">Чек-листы</a>
-        <a class="cqa-nav__link" href="#/appeals" data-page="appeals">Апелляции <span class="cqa-nav__badge" data-appeals-count hidden></span></a>
-        <a class="cqa-nav__link" href="#/analytics" data-page="analytics">Аналитика</a>
-        <a class="cqa-nav__link" href="#/settings" data-page="settings">Настройки модели</a>
-      </nav>
-      <div class="cqa-header__status" data-model-status title="Режим оценки"></div>
-    </header>
-    <main class="cqa-main" id="cqa-view" tabindex="-1">
-      <div class="cqa-empty">Загрузка…</div>
-    </main>
-    <div class="cqa-toasts" aria-live="polite"></div>
-  </div>
-  <script type="module" src="js/app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="description" content="BEZUMIE CQA — проверка качества диалогов, оценка по чек-листу и доказательства в репликах."/>
+    <link rel="icon" href="/brand/favicon.ico" sizes="any"/>
+    <link rel="icon" href="/brand/favicon-32x32.png" type="image/png" sizes="32x32"/>
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png"/>
+    <link rel="preload" href="/brand/CoFoSans-VF.woff2" as="font" type="font/woff2" crossorigin/>
+    <script>
+      (() => { let theme; try { theme = localStorage.getItem('cqa-theme'); } catch {} if (theme !== 'light' && theme !== 'dark') theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; document.documentElement.dataset.theme = theme; document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#051525' : '#ffffff'; })();
+    </script>
+    <title>BEZUMIE CQA — качество диалогов</title>
+    <script type="module" crossorigin src="/assets/index-B9uTyca_.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-NS9NJng2.css">
+  </head>
+  <body><div id="root"></div></body>
 </html>
